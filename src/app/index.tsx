@@ -92,7 +92,7 @@ export default function HomeScreen() {
       </View>
 
       <TouchableOpacity style={styles.centerButton} onPress={centerOnMe}>
-        <Text style={styles.centerButtonText}>➤</Text>
+        <Text style={styles.centerButtonText}>⌖</Text>
       </TouchableOpacity>
     </View>
   );
