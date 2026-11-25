@@ -92,7 +92,13 @@ export default function HomeScreen() {
       </View>
 
       <TouchableOpacity style={styles.centerButton} onPress={centerOnMe}>
-        <Text style={styles.centerButtonText}>⌖</Text>
+        <View style={styles.locationIcon}>
+          <View style={styles.locationTop} />
+          <View style={styles.locationBottom} />
+          <View style={styles.locationLeft} />
+          <View style={styles.locationRight} />
+          <View style={styles.locationDot} />
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -148,8 +154,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 5,
   },
-  centerButtonText: {
-    fontSize: 30,
-    color: '#204B3A',
+  locationIcon: {
+    width: 26,
+    height: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  locationTop: {
+    position: 'absolute',
+    top: 0,
+    width: 4,
+    height: 7,
+    borderRadius: 2,
+    backgroundColor: '#4285F4',
+  },
+  locationBottom: {
+    position: 'absolute',
+    bottom: 0,
+    width: 4,
+    height: 7,
+    borderRadius: 2,
+    backgroundColor: '#4285F4',
+  },
+  locationLeft: {
+    position: 'absolute',
+    left: 0,
+    width: 7,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#4285F4',
+  },
+  locationRight: {
+    position: 'absolute',
+    right: 0,
+    width: 7,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#4285F4',
+  },
+  locationDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#4285F4',
+    borderWidth: 2,
+    borderColor: 'white',
   },
 });
