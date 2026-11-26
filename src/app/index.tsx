@@ -663,7 +663,7 @@ export default function HomeScreen() {
         <Text style={styles.settingsIcon}>⚙</Text>
       </TouchableOpacity>
 
-      {position && !selectedPoint && !filtersOpen && (
+      {position && !selectedPoint && !filtersOpen && Math.min(compassHeading, 360 - compassHeading) > 2 && (
         <TouchableOpacity
           style={[
             styles.northButton,
