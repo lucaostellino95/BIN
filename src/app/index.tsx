@@ -178,10 +178,12 @@ export default function HomeScreen() {
   const isCompactIphone = Platform.OS === 'ios' && width < 600;
 
   const sheetMaxTravel = height * 0.43;
+  const sheetMaxTravelRef = useRef(sheetMaxTravel);
   const sheetTranslateY = useRef(new Animated.Value(sheetMaxTravel)).current;
   const sheetExpandedRef = useRef(pointSheetExpanded);
   const sheetStartYRef = useRef(sheetMaxTravel);
 
+  sheetMaxTravelRef.current = sheetMaxTravel;
   sheetExpandedRef.current = pointSheetExpanded;
 
   useEffect(() => {
@@ -201,20 +203,20 @@ export default function HomeScreen() {
       onMoveShouldSetPanResponder: (_event, gestureState) =>
         Math.abs(gestureState.dy) > 2,
       onPanResponderGrant: () => {
-        sheetStartYRef.current = sheetExpandedRef.current ? 0 : sheetMaxTravel;
+        sheetStartYRef.current = sheetExpandedRef.current ? 0 : sheetMaxTravelRef.current;
         sheetTranslateY.stopAnimation();
       },
       onPanResponderMove: (_event, gestureState) => {
         const nextPosition = Math.max(
           0,
-          Math.min(sheetMaxTravel, sheetStartYRef.current + gestureState.dy)
+          Math.min(sheetMaxTravelRef.current, sheetStartYRef.current + gestureState.dy)
         );
         sheetTranslateY.setValue(nextPosition);
       },
       onPanResponderRelease: (_event, gestureState) => {
         const currentPosition = Math.max(
           0,
-          Math.min(sheetMaxTravel, sheetStartYRef.current + gestureState.dy)
+          Math.min(sheetMaxTravelRef.current, sheetStartYRef.current + gestureState.dy)
         );
         const shouldExpand = gestureState.vy < -0.45 ||
           (Math.abs(gestureState.vy) <= 0.45 && currentPosition < sheetMaxTravel / 2);
