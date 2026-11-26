@@ -353,6 +353,7 @@ export default function HomeScreen() {
   const [compassHeading, setCompassHeading] = useState(0);
   const [compassResetting, setCompassResetting] = useState(false);
   const compassArrowRotation = useRef(new Animated.Value(0)).current;
+  const compassDisplayHeadingRef = useRef(0);
   const compassResetAnimationRef = useRef(false);
   const compassResetReadPendingRef = useRef(false);
   const compassResetStableFramesRef = useRef(0);
@@ -474,6 +475,7 @@ export default function HomeScreen() {
   function finishCompassNorthReset() {
     compassResetAnimationRef.current = false;
     compassResetStableFramesRef.current = 0;
+    compassDisplayHeadingRef.current = 0;
     setCompassResetting(false);
     compassArrowRotation.setValue(0);
     setCompassHeading(0);
@@ -488,12 +490,19 @@ export default function HomeScreen() {
         if (!compassResetAnimationRef.current) return;
 
         const heading = ((camera.heading ?? 0) % 360 + 360) % 360;
-        compassArrowRotation.setValue(-heading);
-        setCompassHeading((current) =>
-          Math.abs(current - heading) < 0.5 ? current : heading
-        );
+        const currentDisplayHeading = compassDisplayHeadingRef.current;
+        const shortestDelta = ((heading - currentDisplayHeading + 540) % 360) - 180;
+        // A gentle follow keeps the arrow from getting ahead of the visible map rotation.
+        const displayedHeading =
+          ((currentDisplayHeading + shortestDelta * 0.22) % 360 + 360) % 360;
 
-        if (Math.min(heading, 360 - heading) <= 0.5) {
+        compassDisplayHeadingRef.current = displayedHeading;
+        compassArrowRotation.setValue(-displayedHeading);
+        setCompassHeading(displayedHeading);
+
+        const mapIsNorth = Math.min(heading, 360 - heading) <= 0.5;
+        const arrowIsNorth = Math.min(displayedHeading, 360 - displayedHeading) <= 0.8;
+        if (mapIsNorth && arrowIsNorth) {
           compassResetStableFramesRef.current += 1;
         } else {
           compassResetStableFramesRef.current = 0;
@@ -548,6 +557,7 @@ export default function HomeScreen() {
     mapRef.getCamera()
       .then((camera) => {
         const heading = ((camera.heading ?? 0) % 360 + 360) % 360;
+        compassDisplayHeadingRef.current = heading;
         compassArrowRotation.setValue(-heading);
         setCompassHeading((current) =>
           Math.abs(current - heading) < 0.5 ? current : heading
