@@ -728,15 +728,15 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointQuickActions}>
-              <TouchableOpacity activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Indicazioni')}>
+              <TouchableOpacity collapsable={false} activeOpacity={1}{1} style={styles.pointQuickAction} onPress={() => showComingSoon('Indicazioni')}>
                 <Text style={styles.pointQuickActionIcon}>➤</Text>
                 <Text style={styles.pointQuickActionLabel}>Indicazioni</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Segnala un problema')}>
+              <TouchableOpacity collapsable={false} activeOpacity={1}{1} style={styles.pointQuickAction} onPress={() => showComingSoon('Segnala un problema')}>
                 <Text style={styles.pointQuickActionIcon}>⚑</Text>
                 <Text style={styles.pointQuickActionLabel}>Segnala</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Aggiungi una foto')}>
+              <TouchableOpacity collapsable={false} activeOpacity={1}{1} style={styles.pointQuickAction} onPress={() => showComingSoon('Aggiungi una foto')}>
                 <Text style={styles.pointQuickActionIcon}>＋</Text>
                 <Text style={styles.pointQuickActionLabel}>Foto</Text>
               </TouchableOpacity>
@@ -752,7 +752,7 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointFeatureGrid}>
-              <TouchableOpacity activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Recensioni')}>
+              <TouchableOpacity collapsable={false} activeOpacity={1}{1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Recensioni')}>
                 <Text style={styles.pointFeatureIcon}>☆</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Recensioni</Text>
@@ -760,7 +760,7 @@ export default function HomeScreen() {
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Foto')}>
+              <TouchableOpacity collapsable={false} activeOpacity={1}{1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Foto')}>
                 <Text style={styles.pointFeatureIcon}>▧</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Foto</Text>
@@ -768,7 +768,7 @@ export default function HomeScreen() {
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Aggiornamenti')}>
+              <TouchableOpacity collapsable={false} activeOpacity={1}{1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Aggiornamenti')}>
                 <Text style={styles.pointFeatureIcon}>↻</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Aggiornamenti</Text>
@@ -776,7 +776,7 @@ export default function HomeScreen() {
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Altre informazioni')}>
+              <TouchableOpacity collapsable={false} activeOpacity={1}{1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Altre informazioni')}>
                 <Text style={styles.pointFeatureIcon}>ⓘ</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Altre informazioni</Text>
