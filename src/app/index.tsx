@@ -289,7 +289,7 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
                 fill="#009640"
               />
               <Path
-                d="M3.3 1.7 H5.2 V3.3 H6.8 V5.2 H5.2 V6.8 H3.3 V5.2 H1.7 V3.3 H3.3 Z"
+                d="M3.3 0.2 H5.2 V1.8 H6.8 V3.7 H5.2 V5.3 H3.3 V3.7 H1.7 V1.8 H3.3 Z"
                 fill="#FFFFFF"
               />
             </G>
