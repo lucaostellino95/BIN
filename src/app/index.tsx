@@ -286,11 +286,9 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
             </>
           ) : subcategoryId === 'rampe' ? (
             <>
-              <Circle cx={12.5} cy={3.2} r={2.1} fill="#FFFFFF" />
-              <Circle cx={9.5} cy={16.2} r={6.1} fill="none" stroke="#FFFFFF" strokeWidth={2.1} />
-              <Path d="M11.5 6.2 L9.2 10.2 L13.1 12.2 L16.1 15.1 L19.2 15.1 M9.2 10.2 L14.2 9.2 L17.4 10.6 M13.1 12.2 L10.9 15.1 L16.1 15.1 L18.2 19.2" fill="none" stroke="#FFFFFF" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
-              <Path d="M9.5 16.2 L9.5 21.8 M9.5 21.8 L15.6 21.8" fill="none" stroke="#FFFFFF" strokeWidth={2.1} strokeLinecap="round" strokeLinejoin="round" />
-              <Circle cx={18.4} cy={19.2} r={1.2} fill="#FFFFFF" />
+              <Circle cx={14} cy={3.5} r={2} fill="#FFFFFF" />
+              <Circle cx={8.5} cy={17} r={5} fill="none" stroke="#FFFFFF" strokeWidth={2.2} />
+              <Path d="M12.5 6.5 L10 11.2 L15 12.5 L18.5 17 H21.5 M12.5 7 L17.2 8.3 L18.8 10.8 M10 11.2 L9.5 13.2 H14.5" fill="none" stroke="#FFFFFF" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
             </>
           ) : (
             <Path
