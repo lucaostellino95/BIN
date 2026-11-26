@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import MapView, { Marker, UrlTile } from 'react-native-maps';
+import { Alert, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import MapView, { UrlTile } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 export default function HomeScreen() {
@@ -53,6 +53,10 @@ export default function HomeScreen() {
     }, 500);
   }
 
+  function showComingSoon(feature: string) {
+    Alert.alert(feature, 'Questa funzione la realizziamo nel prossimo passaggio.');
+  }
+
   return (
     <View style={styles.container}>
       {position ? (
@@ -91,15 +95,49 @@ export default function HomeScreen() {
         <Text style={styles.subtitle}>La mappa intorno a te</Text>
       </View>
 
-      <TouchableOpacity style={styles.centerButton} onPress={centerOnMe}>
-        <View style={styles.locationIcon}>
-          <View style={styles.locationTop} />
-          <View style={styles.locationBottom} />
-          <View style={styles.locationLeft} />
-          <View style={styles.locationRight} />
-          <View style={styles.locationDot} />
-        </View>
+      <TouchableOpacity
+        style={styles.settingsButton}
+        onPress={() => showComingSoon('Impostazioni')}
+        activeOpacity={0.75}
+        accessibilityLabel="Impostazioni"
+      >
+        <Text style={styles.settingsIcon}>⚙</Text>
       </TouchableOpacity>
+
+      <View style={styles.rightActions}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => showComingSoon('Filtri')}
+          activeOpacity={0.75}
+          accessibilityLabel="Filtri"
+        >
+          <Text style={styles.actionIcon}>☷</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => showComingSoon('Aggiungi una segnalazione')}
+          activeOpacity={0.75}
+          accessibilityLabel="Aggiungi una segnalazione"
+        >
+          <Text style={styles.addIcon}>＋</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={centerOnMe}
+          activeOpacity={0.75}
+          accessibilityLabel="Centra la mappa sulla mia posizione"
+        >
+          <View style={styles.locationIcon}>
+            <View style={styles.locationTop} />
+            <View style={styles.locationBottom} />
+            <View style={styles.locationLeft} />
+            <View style={styles.locationRight} />
+            <View style={styles.locationDot} />
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -126,11 +164,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 55,
     left: 18,
-    right: 18,
     backgroundColor: 'white',
     borderRadius: 16,
-    padding: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 11,
     elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
   },
   logo: {
     fontSize: 25,
@@ -142,17 +184,55 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
   },
-  centerButton: {
+  settingsButton: {
     position: 'absolute',
-    right: 20,
-    bottom: 35,
+    top: 55,
+    right: 18,
+    width: 48,
+    height: 48,
+    borderRadius: 16,
     backgroundColor: 'white',
-    width: 52,
-    height: 52,
-    borderRadius: 26,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
+  },
+  settingsIcon: {
+    fontSize: 25,
+    color: '#315641',
+  },
+  rightActions: {
+    position: 'absolute',
+    right: 18,
+    top: '42%',
+    gap: 12,
+  },
+  actionButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 16,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
+  },
+  actionIcon: {
+    fontSize: 27,
+    color: '#315641',
+    lineHeight: 31,
+  },
+  addIcon: {
+    fontSize: 34,
+    fontWeight: '300',
+    color: '#315641',
+    lineHeight: 38,
   },
   locationIcon: {
     width: 26,
