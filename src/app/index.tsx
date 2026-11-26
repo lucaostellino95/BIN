@@ -297,11 +297,11 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
                 strokeLinejoin="miter"
               />
               <Path
-                d="M5.1 8.7 A8.2 8.2 0 0 1 17.5 19"
+                d="M4.8 11.1 A5.5 5.5 0 1 0 14 13.6"
                 fill="none"
                 stroke="#FFFFFF"
                 strokeWidth={2.2}
-                strokeLinecap="square"
+                strokeLinecap="round"
               />
             </>
           ) : (
