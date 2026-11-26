@@ -298,9 +298,9 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
                 d="M18.5 -3 H20.5 V-1 H22.5 V1 H20.5 V3 H18.5 V1 H16.5 V-1 H18.5 Z"
                 fill="#FFFFFF"
               />
-              <SvgText x={12} y={21.3} fill="#FFFFFF" fontSize={5.2} fontWeight="bold" textAnchor="middle">AED</SvgText>
-              <SvgText x={12} y={24.5} fill="#FFFFFF" fontSize={2.25} fontWeight="600" textAnchor="middle">Automated External</SvgText>
-              <SvgText x={12} y={27.1} fill="#FFFFFF" fontSize={2.45} fontWeight="600" textAnchor="middle">Defibrillator</SvgText>
+              <SvgText x={12} y={20.8} fill="#FFFFFF" fontSize={4.8} fontWeight="bold" textAnchor="middle">AED</SvgText>
+              <SvgText x={12} y={23.8} fill="#FFFFFF" fontSize={1.9} fontWeight="600" textAnchor="middle">Automated External</SvgText>
+              <SvgText x={12} y={26.2} fill="#FFFFFF" fontSize={2.0} fontWeight="600" textAnchor="middle">Defibrillator</SvgText>
             </G>
           ) : subcategoryId === 'rampe' ? (
             <>
