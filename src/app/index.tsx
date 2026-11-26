@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Animated,
-  Easing,
   Platform,
   PanResponder,
   StyleSheet,
@@ -355,6 +354,9 @@ export default function HomeScreen() {
   const [compassResetting, setCompassResetting] = useState(false);
   const compassArrowRotation = useRef(new Animated.Value(0)).current;
   const compassResetAnimationRef = useRef(false);
+  const compassResetReadPendingRef = useRef(false);
+  const compassResetStableFramesRef = useRef(0);
+  const compassSyncFrameRef = useRef<number | null>(null);
   const lastCompassReadAtRef = useRef(0);
   const compassReadPendingRef = useRef(false);
   const compassReadQueuedRef = useRef(false);
@@ -469,36 +471,68 @@ export default function HomeScreen() {
     }, 500);
   }
 
+  function finishCompassNorthReset() {
+    compassResetAnimationRef.current = false;
+    compassResetStableFramesRef.current = 0;
+    setCompassResetting(false);
+    compassArrowRotation.setValue(0);
+    setCompassHeading(0);
+  }
+
+  function trackCompassNorthReset() {
+    if (!mapRef || !compassResetAnimationRef.current || compassResetReadPendingRef.current) return;
+
+    compassResetReadPendingRef.current = true;
+    mapRef.getCamera()
+      .then((camera) => {
+        if (!compassResetAnimationRef.current) return;
+
+        const heading = ((camera.heading ?? 0) % 360 + 360) % 360;
+        compassArrowRotation.setValue(-heading);
+        setCompassHeading((current) =>
+          Math.abs(current - heading) < 0.5 ? current : heading
+        );
+
+        if (Math.min(heading, 360 - heading) <= 0.5) {
+          compassResetStableFramesRef.current += 1;
+        } else {
+          compassResetStableFramesRef.current = 0;
+        }
+
+        if (compassResetStableFramesRef.current >= 2) {
+          finishCompassNorthReset();
+        }
+      })
+      .catch(() => {
+        // Keep the compass visible if the native camera cannot be read.
+      })
+      .finally(() => {
+        compassResetReadPendingRef.current = false;
+        if (compassResetAnimationRef.current) {
+          compassSyncFrameRef.current = requestAnimationFrame(trackCompassNorthReset);
+        }
+      });
+  }
+
   function orientMapNorth() {
     if (!mapRef) return;
 
-    const currentHeading = ((compassHeading % 360) + 360) % 360;
-    const targetRotation = currentHeading > 180 ? -360 : 0;
-
-    // Animate the compass arrow in sync with the map rotating back to north.
     compassResetAnimationRef.current = true;
+    compassResetStableFramesRef.current = 0;
     setCompassResetting(true);
     compassArrowRotation.stopAnimation();
-    compassArrowRotation.setValue(-currentHeading);
+
+    if (compassSyncFrameRef.current !== null) {
+      cancelAnimationFrame(compassSyncFrameRef.current);
+      compassSyncFrameRef.current = null;
+    }
 
     mapRef.animateCamera({ heading: 0 }, { duration: 500 });
-    Animated.timing(compassArrowRotation, {
-      toValue: targetRotation,
-      duration: 500,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      compassResetAnimationRef.current = false;
-      if (finished) {
-        compassArrowRotation.setValue(0);
-        setCompassHeading(0);
-      }
-      setCompassResetting(false);
-    });
+    compassSyncFrameRef.current = requestAnimationFrame(trackCompassNorthReset);
   }
 
   function syncCompassWithMap(force = false) {
-    if (!mapRef) return;
+    if (!mapRef || compassResetAnimationRef.current) return;
 
     if (compassReadPendingRef.current) {
       if (force) compassReadQueuedRef.current = true;
@@ -514,9 +548,7 @@ export default function HomeScreen() {
     mapRef.getCamera()
       .then((camera) => {
         const heading = ((camera.heading ?? 0) % 360 + 360) % 360;
-        if (!compassResetAnimationRef.current) {
-          compassArrowRotation.setValue(-heading);
-        }
+        compassArrowRotation.setValue(-heading);
         setCompassHeading((current) =>
           Math.abs(current - heading) < 0.5 ? current : heading
         );
