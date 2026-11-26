@@ -171,7 +171,7 @@ export default function HomeScreen() {
   const [appliedSubcategories, setAppliedSubcategories] = useState<string[] | null>(null);
   const [appliedDistance, setAppliedDistance] = useState('Tutti');
   const [selectedPoint, setSelectedPoint] = useState<(DemoPoint & { latitude: number; longitude: number }) | null>(null);
-  const [selectedPointScreenPosition, setSelectedPointScreenPosition] = useState<{ x: number; y: number } | null>(null);
+  const [pointSheetExpanded, setPointSheetExpanded] = useState(false);
   const { width, height } = useWindowDimensions();
   const isCompactIphone = Platform.OS === 'ios' && width < 600;
 
@@ -220,23 +220,11 @@ export default function HomeScreen() {
     }, 500);
   }
 
-  async function openPointCard(point: DemoPoint & { latitude: number; longitude: number }) {
-    if (!mapRef) return;
-
-    try {
-      const screenPosition = await mapRef.pointForCoordinate({
-        latitude: point.latitude,
-        longitude: point.longitude,
-      });
-      setSelectedPoint(point);
-      setSelectedPointScreenPosition(screenPosition);
-    } catch {
-      setSelectedPoint(point);
-      setSelectedPointScreenPosition({
-        x: width / 2,
-        y: height / 2,
-      });
-    }
+  function openPointCard(point: DemoPoint & { latitude: number; longitude: number }) {
+    setSelectedPoint(point);
+    setPointSheetExpanded(false);
+    setFiltersOpen(false);
+    setFiltersExpanded(false);
   }
 
   function handleMapTap() {
@@ -248,7 +236,7 @@ export default function HomeScreen() {
     }
     if (selectedPoint) {
       setSelectedPoint(null);
-      setSelectedPointScreenPosition(null);
+      setPointSheetExpanded(false);
     }
   }
 
@@ -588,50 +576,136 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {selectedPoint && selectedPointScreenPosition && (
+      {selectedPoint && (
         <View
           style={[
-            styles.pointCard,
+            styles.pointSheet,
             {
-              left: Math.max(12, Math.min(selectedPointScreenPosition.x - 145, width - 302)),
-              top: selectedPointScreenPosition.y > 190
-                ? selectedPointScreenPosition.y - 164
-                : selectedPointScreenPosition.y + 22,
+              height: pointSheetExpanded ? height * 0.78 : height * 0.35,
             },
           ]}
         >
-          <View style={styles.pointCardTopRow}>
-            <View style={styles.pointCardIcon}>
-              <Text style={styles.pointCardIconText}>{selectedPoint.icon}</Text>
+          <TouchableOpacity
+            style={styles.sheetHandleArea}
+            onPress={() => setPointSheetExpanded((expanded) => !expanded)}
+            activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel={pointSheetExpanded ? 'Riduci scheda' : 'Espandi scheda'}
+            accessibilityState={{ expanded: pointSheetExpanded }}
+          >
+            <View style={styles.sheetHandle} />
+          </TouchableOpacity>
+
+          <ScrollView
+            style={styles.pointSheetScroll}
+            contentContainerStyle={styles.pointSheetContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.pointSheetHeader}>
+              <View style={styles.pointSheetTitleGroup}>
+                <View style={styles.pointCardIcon}>
+                  <Text style={styles.pointCardIconText}>{selectedPoint.icon}</Text>
+                </View>
+                <View style={styles.pointCardCopy}>
+                  <Text style={styles.pointCardTitle}>{selectedPoint.title}</Text>
+                  <Text style={styles.pointCardCategory}>
+                    {CATEGORIES.flatMap((category) => category.subcategories)
+                      .find((subcategory) => subcategory.id === selectedPoint.subcategoryId)?.label}
+                  </Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={styles.pointCardClose}
+                onPress={() => {
+                  setSelectedPoint(null);
+                  setPointSheetExpanded(false);
+                }}
+                accessibilityLabel="Chiudi scheda punto"
+                activeOpacity={0.7}
+              >
+                <Text style={styles.pointCardCloseText}>×</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.pointCardCopy}>
-              <Text style={styles.pointCardTitle}>{selectedPoint.title}</Text>
-              <Text style={styles.pointCardCategory}>
-                {CATEGORIES.flatMap((category) => category.subcategories)
-                  .find((subcategory) => subcategory.id === selectedPoint.subcategoryId)?.label}
-              </Text>
+
+            <View style={styles.pointPhotoPlaceholder}>
+              <View style={styles.pointPhotoIconWrap}>
+                <Text style={styles.pointPhotoIcon}>▧</Text>
+              </View>
+              <Text style={styles.pointPhotoTitle}>Nessuna foto disponibile</Text>
+              <Text style={styles.pointPhotoSubtitle}>Le foto condivise dalla community appariranno qui</Text>
             </View>
-            <TouchableOpacity
-              style={styles.pointCardClose}
-              onPress={() => {
-                setSelectedPoint(null);
-                setSelectedPointScreenPosition(null);
-              }}
-              accessibilityLabel="Chiudi scheda punto"
-              activeOpacity={0.7}
-            >
-              <Text style={styles.pointCardCloseText}>×</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.pointCardDescription}>{selectedPoint.description}</Text>
-          <View style={styles.pointCardFooter}>
-            <View style={styles.demoDot} />
-            <Text style={styles.demoNotice}>Punto dimostrativo · posizione non reale</Text>
-          </View>
+
+            <View style={styles.pointQuickActions}>
+              <TouchableOpacity style={styles.pointQuickAction} onPress={() => showComingSoon('Indicazioni')} activeOpacity={0.75}>
+                <Text style={styles.pointQuickActionIcon}>➤</Text>
+                <Text style={styles.pointQuickActionLabel}>Indicazioni</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.pointQuickAction} onPress={() => showComingSoon('Segnala un problema')} activeOpacity={0.75}>
+                <Text style={styles.pointQuickActionIcon}>⚑</Text>
+                <Text style={styles.pointQuickActionLabel}>Segnala</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.pointQuickAction} onPress={() => showComingSoon('Aggiungi una foto')} activeOpacity={0.75}>
+                <Text style={styles.pointQuickActionIcon}>＋</Text>
+                <Text style={styles.pointQuickActionLabel}>Foto</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.pointInfoSection}>
+              <Text style={styles.pointSectionTitle}>Informazioni</Text>
+              <Text style={styles.pointCardDescription}>{selectedPoint.description}</Text>
+              <View style={styles.pointDataNotice}>
+                <View style={styles.demoDot} />
+                <Text style={styles.demoNotice}>Punto dimostrativo · posizione e informazioni non reali</Text>
+              </View>
+            </View>
+
+            <View style={styles.pointFeatureGrid}>
+              <TouchableOpacity style={styles.pointFeatureItem} onPress={() => showComingSoon('Recensioni')} activeOpacity={0.75}>
+                <Text style={styles.pointFeatureIcon}>☆</Text>
+                <View style={styles.pointFeatureCopy}>
+                  <Text style={styles.pointFeatureTitle}>Recensioni</Text>
+                  <Text style={styles.pointFeatureSubtitle}>Esperienze e valutazioni</Text>
+                </View>
+                <Text style={styles.pointFeatureChevron}>›</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.pointFeatureItem} onPress={() => showComingSoon('Foto')} activeOpacity={0.75}>
+                <Text style={styles.pointFeatureIcon}>▧</Text>
+                <View style={styles.pointFeatureCopy}>
+                  <Text style={styles.pointFeatureTitle}>Foto</Text>
+                  <Text style={styles.pointFeatureSubtitle}>Immagini condivise dagli utenti</Text>
+                </View>
+                <Text style={styles.pointFeatureChevron}>›</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.pointFeatureItem} onPress={() => showComingSoon('Aggiornamenti')} activeOpacity={0.75}>
+                <Text style={styles.pointFeatureIcon}>↻</Text>
+                <View style={styles.pointFeatureCopy}>
+                  <Text style={styles.pointFeatureTitle}>Aggiornamenti</Text>
+                  <Text style={styles.pointFeatureSubtitle}>Verifiche e cronologia del punto</Text>
+                </View>
+                <Text style={styles.pointFeatureChevron}>›</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.pointFeatureItem} onPress={() => showComingSoon('Altre informazioni')} activeOpacity={0.75}>
+                <Text style={styles.pointFeatureIcon}>ⓘ</Text>
+                <View style={styles.pointFeatureCopy}>
+                  <Text style={styles.pointFeatureTitle}>Altre informazioni</Text>
+                  <Text style={styles.pointFeatureSubtitle}>Dettagli e caratteristiche</Text>
+                </View>
+                <Text style={styles.pointFeatureChevron}>›</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </View>
       )}
 
-      <View style={[styles.bottomActions, isCompactIphone && styles.bottomActionsIphone]}>
+      <View
+        style={[
+          styles.bottomActions,
+          !selectedPoint && isCompactIphone && styles.bottomActionsIphone,
+          selectedPoint && {
+            bottom: height * (pointSheetExpanded ? 0.78 : 0.35) + 12,
+          },
+        ]}
+      >
         <TouchableOpacity
           style={[styles.actionButton, filtersOpen && styles.actionButtonActive]}
           onPress={() => {
@@ -768,29 +842,58 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderTopColor: '#204B3A',
   },
-  pointCard: {
+  pointSheet: {
     position: 'absolute',
-    width: 290,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 14,
-    elevation: 14,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 18,
+    paddingBottom: 18,
+    elevation: 18,
     shadowColor: '#173B2A',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.16,
     shadowRadius: 12,
     borderWidth: 1,
+    borderBottomWidth: 0,
     borderColor: '#E8EEE8',
   },
-  pointCardTopRow: {
+  sheetHandleArea: {
+    height: 27,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sheetHandle: {
+    width: 42,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: 'rgba(49, 86, 65, 0.28)',
+  },
+  pointSheetScroll: {
+    flex: 1,
+  },
+  pointSheetContent: {
+    paddingBottom: 14,
+  },
+  pointSheetHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 13,
+  },
+  pointSheetTitleGroup: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
   pointCardClose: {
-    width: 29,
-    height: 29,
-    borderRadius: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 11,
     backgroundColor: '#F1F5F1',
     alignItems: 'center',
     justifyContent: 'center',
@@ -801,16 +904,16 @@ const styles = StyleSheet.create({
     lineHeight: 25,
   },
   pointCardIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#204B3A',
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: '#E7EFE9',
     alignItems: 'center',
     justifyContent: 'center',
   },
   pointCardIconText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: '#204B3A',
+    fontSize: 18,
     fontWeight: '800',
   },
   pointCardCopy: {
@@ -818,26 +921,100 @@ const styles = StyleSheet.create({
   },
   pointCardTitle: {
     color: '#204B3A',
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '800',
     flexShrink: 1,
   },
   pointCardCategory: {
     color: '#64806B',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     marginTop: 3,
+  },
+  pointPhotoPlaceholder: {
+    height: 112,
+    borderRadius: 16,
+    backgroundColor: '#F1F5F1',
+    borderWidth: 1,
+    borderColor: '#E6ECE6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 13,
+    gap: 4,
+  },
+  pointPhotoIconWrap: {
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    backgroundColor: '#E3EBE4',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 2,
+  },
+  pointPhotoIcon: {
+    color: '#64806B',
+    fontSize: 21,
+  },
+  pointPhotoTitle: {
+    color: '#315641',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  pointPhotoSubtitle: {
+    color: '#8A9B8E',
+    fontSize: 10,
+    textAlign: 'center',
+  },
+  pointQuickActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 5,
+    marginBottom: 12,
+  },
+  pointQuickAction: {
+    minWidth: 82,
+    alignItems: 'center',
+    gap: 5,
+  },
+  pointQuickActionIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 14,
+    overflow: 'hidden',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    backgroundColor: '#EDF3EE',
+    color: '#315641',
+    fontSize: 20,
+    fontWeight: '700',
+    paddingTop: 8,
+  },
+  pointQuickActionLabel: {
+    color: '#315641',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  pointInfoSection: {
+    paddingTop: 12,
+    paddingBottom: 13,
+    borderTopWidth: 1,
+    borderTopColor: '#EDF1ED',
+  },
+  pointSectionTitle: {
+    color: '#204B3A',
+    fontSize: 15,
+    fontWeight: '800',
+    marginBottom: 6,
   },
   pointCardDescription: {
     color: '#526357',
     fontSize: 12,
-    lineHeight: 17,
-    marginTop: 12,
+    lineHeight: 18,
   },
-  pointCardFooter: {
+  pointDataNotice: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 9,
     gap: 6,
   },
   demoDot: {
@@ -849,6 +1026,48 @@ const styles = StyleSheet.create({
   demoNotice: {
     color: '#9AA69D',
     fontSize: 10,
+  },
+  pointFeatureGrid: {
+    borderTopWidth: 1,
+    borderTopColor: '#EDF1ED',
+  },
+  pointFeatureItem: {
+    minHeight: 58,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F3F0',
+    gap: 12,
+    paddingVertical: 8,
+  },
+  pointFeatureIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: '#F1F5F1',
+    color: '#315641',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontSize: 20,
+    paddingTop: 7,
+  },
+  pointFeatureCopy: {
+    flex: 1,
+    gap: 3,
+  },
+  pointFeatureTitle: {
+    color: '#315641',
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  pointFeatureSubtitle: {
+    color: '#8A9B8E',
+    fontSize: 10,
+  },
+  pointFeatureChevron: {
+    color: '#91A195',
+    fontSize: 23,
+    paddingHorizontal: 4,
   },
   filterPanel: {
     position: 'absolute',
