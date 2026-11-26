@@ -302,6 +302,22 @@ export default function HomeScreen() {
             maximumZ={19}
             tileSize={256}
           />
+          {visibleDemoPoints.map((point) => (
+            <Marker
+              key={point.id}
+              coordinate={{ latitude: point.latitude, longitude: point.longitude }}
+              anchor={{ x: 0.5, y: 1 }}
+              onPress={() => setSelectedPoint(point)}
+              tracksViewChanges
+            >
+              <View style={styles.mapPin}>
+                <View style={styles.mapPinCircle}>
+                  <Text style={styles.mapPinIcon}>{point.icon}</Text>
+                </View>
+                <View style={styles.mapPinTail} />
+              </View>
+            </Marker>
+          ))}
         </MapView>
       ) : (
         <View style={styles.loading}>
@@ -536,9 +552,11 @@ export default function HomeScreen() {
             <TouchableOpacity
               style={styles.applyButton}
               onPress={() => {
+                setAppliedSubcategories(selectedSubcategories);
+                setAppliedDistance(selectedDistance);
+                setSelectedPoint(null);
                 setFiltersOpen(false);
                 setFiltersExpanded(false);
-                resetFilters();
               }}
               activeOpacity={0.8}
             >
@@ -546,6 +564,32 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
+        </View>
+      )}
+
+      {selectedPoint && (
+        <View style={[styles.pointCard, { bottom: isCompactIphone ? 180 : 96 }]}>
+          <TouchableOpacity
+            style={styles.pointCardClose}
+            onPress={() => setSelectedPoint(null)}
+            accessibilityLabel="Chiudi scheda punto"
+          >
+            <Text style={styles.pointCardCloseText}>×</Text>
+          </TouchableOpacity>
+          <View style={styles.pointCardHeading}>
+            <View style={styles.pointCardIcon}>
+              <Text style={styles.pointCardIconText}>{selectedPoint.icon}</Text>
+            </View>
+            <View style={styles.pointCardCopy}>
+              <Text style={styles.pointCardTitle}>{selectedPoint.title}</Text>
+              <Text style={styles.pointCardCategory}>
+                {CATEGORIES.flatMap((category) => category.subcategories)
+                  .find((subcategory) => subcategory.id === selectedPoint.subcategoryId)?.label}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.pointCardDescription}>{selectedPoint.description}</Text>
+          <Text style={styles.demoNotice}>Punto dimostrativo · posizione non reale</Text>
         </View>
       )}
 
@@ -646,6 +690,118 @@ const styles = StyleSheet.create({
   settingsIcon: {
     fontSize: 25,
     color: '#315641',
+  },
+  mapPin: {
+    width: 38,
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  mapPinCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#204B3A',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.22,
+    shadowRadius: 3,
+  },
+  mapPinIcon: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '800',
+    textAlign: 'center',
+    includeFontPadding: false,
+  },
+  mapPinTail: {
+    position: 'absolute',
+    top: 26,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 7,
+    borderRightWidth: 7,
+    borderTopWidth: 12,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: '#204B3A',
+  },
+  pointCard: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 16,
+    paddingRight: 44,
+    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
+  },
+  pointCardClose: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 10,
+    backgroundColor: '#F1F5F1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+  },
+  pointCardCloseText: {
+    color: '#315641',
+    fontSize: 22,
+    lineHeight: 25,
+  },
+  pointCardHeading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 11,
+  },
+  pointCardIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#204B3A',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pointCardIconText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  pointCardCopy: {
+    flex: 1,
+  },
+  pointCardTitle: {
+    color: '#204B3A',
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  pointCardCategory: {
+    color: '#64806B',
+    fontSize: 12,
+    marginTop: 2,
+  },
+  pointCardDescription: {
+    color: '#526357',
+    fontSize: 13,
+    marginTop: 12,
+  },
+  demoNotice: {
+    color: '#9AA69D',
+    fontSize: 10,
+    marginTop: 8,
   },
   filterPanel: {
     position: 'absolute',
