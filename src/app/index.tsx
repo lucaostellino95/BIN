@@ -239,11 +239,17 @@ export default function HomeScreen() {
     }
   }
 
-  function closeMapOverlays() {
-    setFiltersOpen(false);
-    setFiltersExpanded(false);
-    setSelectedPoint(null);
-    setSelectedPointScreenPosition(null);
+  function handleMapTap() {
+    if (filtersOpen) {
+      setAppliedSubcategories(selectedSubcategories);
+      setAppliedDistance(selectedDistance);
+      setFiltersOpen(false);
+      setFiltersExpanded(false);
+    }
+    if (selectedPoint) {
+      setSelectedPoint(null);
+      setSelectedPointScreenPosition(null);
+    }
   }
 
   function showComingSoon(feature: string) {
@@ -322,7 +328,7 @@ export default function HomeScreen() {
           showsUserLocation
           showsMyLocationButton={false}
           showsCompass
-          onPress={closeMapOverlays}
+          onPress={handleMapTap}
         >
           <UrlTile
             urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -576,20 +582,7 @@ export default function HomeScreen() {
                 category.subcategories.some((item) => selectedSubcategories.includes(item.id))
               ).length} categorie · {selectedSubcategories.length} sottocategorie selezionate
             </Text>
-            <TouchableOpacity
-              style={styles.applyButton}
-              onPress={() => {
-                setAppliedSubcategories(selectedSubcategories);
-                setAppliedDistance(selectedDistance);
-                setSelectedPoint(null);
-                setSelectedPointScreenPosition(null);
-                setFiltersOpen(false);
-                setFiltersExpanded(false);
-              }}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.applyButtonText}>Mostra sulla mappa</Text>
-            </TouchableOpacity>
+            <Text style={styles.tapHint}>Tocca la mappa per applicare i filtri</Text>
           </View>
 
         </View>
@@ -862,15 +855,17 @@ const styles = StyleSheet.create({
     left: 12,
     right: 12,
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
+    borderRadius: 22,
     paddingHorizontal: 18,
     paddingTop: 10,
-    paddingBottom: 12,
-    elevation: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    paddingBottom: 14,
+    elevation: 14,
+    shadowColor: '#173B2A',
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
     shadowRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E8EEE8',
   },
   panelHeader: {
     flexDirection: 'row',
@@ -882,11 +877,12 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: '800',
     color: '#204B3A',
+    letterSpacing: -0.3,
   },
   panelSubtitle: {
     fontSize: 12,
     color: '#789080',
-    marginTop: 3,
+    marginTop: 4,
   },
   closeButton: {
     width: 34,
@@ -1113,11 +1109,17 @@ const styles = StyleSheet.create({
     borderTopColor: '#EDF1ED',
     paddingTop: 11,
     marginTop: 7,
-    gap: 9,
+    gap: 5,
   },
   selectionSummary: {
-    color: '#829187',
+    color: '#64806B',
     fontSize: 11,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  tapHint: {
+    color: '#9AA69D',
+    fontSize: 10,
     textAlign: 'center',
   },
   applyButton: {
