@@ -279,7 +279,11 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
           ) : subcategoryId === 'parcheggi' ? (
             <Path d={iconPath} fill="none" stroke="#FFFFFF" strokeWidth={2.8} strokeLinecap="round" strokeLinejoin="round" />
           ) : subcategoryId === 'dae' ? (
-            <Path d={iconPath} fill="#FFFFFF" stroke="#FFFFFF" strokeWidth={0.4} strokeLinejoin="round" />
+            <>
+              <Path d="M5 3 H19 Q21 3 21 5 V19 Q21 21 19 21 H5 Q3 21 3 19 V5 Q3 3 5 3 Z" fill="none" stroke="#FFFFFF" strokeWidth={1.8} strokeLinejoin="round" />
+              <Path d="M12 7 C10 5 7 7 8 10 C8.5 12 12 14 12 14 C12 14 15.5 12 16 10 C17 7 14 5 12 7 Z" fill="none" stroke="#FFFFFF" strokeWidth={1.5} strokeLinejoin="round" />
+              <Path d="M14 8 L10 12 H12 L11 16 L16 11 H13 Z" fill="#FFFFFF" />
+            </>
           ) : (
             <Path
               d={iconPath}
