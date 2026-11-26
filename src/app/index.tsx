@@ -923,7 +923,8 @@ const styles = StyleSheet.create({
     borderColor: '#E8EEE8',
   },
   sheetHandleArea: {
-    height: 27,
+    // A larger touch target makes the sheet easier to grab without changing the visible handle.
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
   },
