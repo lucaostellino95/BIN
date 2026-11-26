@@ -34,8 +34,12 @@ export default function AppTabs() {
 }
 
 export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps) {
+  // Expo Router's slot ref type is incompatible with React Native's Pressable ref.
+  // The web tab button does not need that ref, so omit it when forwarding props.
+  const { ref: _ref, ...pressableProps } = props;
+
   return (
-    <Pressable {...props} style={({ pressed }) => pressed && styles.pressed}>
+    <Pressable {...pressableProps} style={({ pressed }) => pressed && styles.pressed}>
       <ThemedView
         type={isFocused ? 'backgroundSelected' : 'backgroundElement'}
         style={styles.tabButtonView}>
