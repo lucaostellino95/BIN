@@ -295,6 +295,15 @@ export default function HomeScreen() {
           showsUserLocation
           showsMyLocationButton={false}
           showsCompass
+          onPress={() => {
+            if (filtersOpen) {
+              setFiltersOpen(false);
+              setFiltersExpanded(false);
+            }
+            if (selectedPoint) {
+              setSelectedPoint(null);
+            }
+          }}
         >
           <UrlTile
             urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
