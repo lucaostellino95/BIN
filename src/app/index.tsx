@@ -585,7 +585,7 @@ export default function HomeScreen() {
           />
           {visibleDemoPoints.map((point) => (
             <Marker
-              key={point.id}
+              key={point.subcategoryId === 'dae' ? `${point.id}-aed-sign-v2` : point.id}
               coordinate={{ latitude: point.latitude, longitude: point.longitude }}
               anchor={{ x: 0.5, y: 1 }}
               onPress={() => {
