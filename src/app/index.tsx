@@ -753,17 +753,16 @@ export default function HomeScreen() {
       )}
 
       <Animated.View
+        pointerEvents={selectedPoint && pointSheetExpanded ? 'none' : 'auto'}
         style={[
           styles.bottomActions,
           !selectedPoint && isCompactIphone && styles.bottomActionsIphone,
           selectedPoint && {
-            bottom: height * 0.78 + 12,
-            transform: [{
-              translateY: sheetTranslateY.interpolate({
-                inputRange: [0, sheetMaxTravel],
-                outputRange: [0, sheetMaxTravel],
-              }),
-            }],
+            bottom: height * 0.35 + 12,
+            opacity: sheetTranslateY.interpolate({
+              inputRange: [0, sheetMaxTravel],
+              outputRange: [0, 1],
+            }),
           },
         ]}
       >
