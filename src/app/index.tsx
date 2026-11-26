@@ -431,7 +431,6 @@ export default function HomeScreen() {
       <TouchableOpacity
         style={styles.settingsButton}
         onPress={() => showComingSoon('Impostazioni')}
-        activeOpacity={0.75}
         accessibilityLabel="Impostazioni"
       >
         <Text style={styles.settingsIcon}>⚙</Text>
@@ -450,7 +449,6 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.expandButton}
             onPress={() => setFiltersExpanded((expanded) => !expanded)}
-            activeOpacity={0.7}
             accessibilityLabel={filtersExpanded ? 'Riduci pannello' : 'Espandi pannello'}
             accessibilityRole="button"
           >
@@ -474,7 +472,6 @@ export default function HomeScreen() {
                 setFiltersOpen(false);
                 setFiltersExpanded(false);
               }}
-              activeOpacity={0.7}
               accessibilityLabel="Chiudi filtri"
             >
               <Text style={styles.closeButtonText}>×</Text>
@@ -489,11 +486,11 @@ export default function HomeScreen() {
             <View style={styles.sectionHeading}>
               <Text style={styles.sectionTitle}>Categorie</Text>
               <View style={styles.quickActions}>
-                <TouchableOpacity onPress={selectAllCategories} activeOpacity={0.7}>
+                <TouchableOpacity onPress={selectAllCategories}>
                   <Text style={styles.quickActionText}>Tutte</Text>
                 </TouchableOpacity>
                 <Text style={styles.quickActionSeparator}>·</Text>
-                <TouchableOpacity onPress={clearCategories} activeOpacity={0.7}>
+                <TouchableOpacity onPress={clearCategories}>
                   <Text style={styles.quickActionText}>Nessuna</Text>
                 </TouchableOpacity>
               </View>
@@ -514,7 +511,6 @@ export default function HomeScreen() {
                       <TouchableOpacity
                         style={styles.categoryHeaderButton}
                         onPress={() => toggleCategory(category.id)}
-                        activeOpacity={0.75}
                         accessibilityRole="checkbox"
                         accessibilityState={{ checked: allSelected }}
                       >
@@ -546,7 +542,6 @@ export default function HomeScreen() {
                         onPress={() =>
                           setExpandedCategory(expanded ? null : category.id)
                         }
-                        activeOpacity={0.7}
                         accessibilityLabel={expanded ? 'Nascondi sottocategorie' : 'Mostra sottocategorie'}
                         accessibilityState={{ expanded }}
                       >
@@ -573,7 +568,6 @@ export default function HomeScreen() {
                                 selected && styles.subcategoryOptionSelected,
                               ]}
                               onPress={() => toggleSubcategory(subcategory.id)}
-                              activeOpacity={0.75}
                               accessibilityRole="checkbox"
                               accessibilityState={{ checked: selected }}
                             >
@@ -618,7 +612,6 @@ export default function HomeScreen() {
                       selected && styles.distanceOptionSelected,
                     ]}
                     onPress={() => setSelectedDistance(distance)}
-                    activeOpacity={0.75}
                     accessibilityRole="radio"
                     accessibilityState={{ selected }}
                   >
@@ -646,7 +639,6 @@ export default function HomeScreen() {
               <TouchableOpacity
                 style={styles.resetButton}
                 onPress={resetFilters}
-                activeOpacity={0.75}
                 accessibilityRole="button"
               >
                 <Text style={styles.resetButtonText}>Reset</Text>
@@ -654,7 +646,6 @@ export default function HomeScreen() {
               <TouchableOpacity
                 style={[styles.applyButton, styles.applyButtonFlex]}
                 onPress={applyFilters}
-                activeOpacity={0.85}
                 accessibilityRole="button"
               >
                 <Text style={styles.applyButtonText}>Applica filtri</Text>
@@ -714,7 +705,6 @@ export default function HomeScreen() {
                   setPointSheetExpanded(false);
                 }}
                 accessibilityLabel="Chiudi scheda punto"
-                activeOpacity={0.7}
               >
                 <Text style={styles.pointCardCloseText}>×</Text>
               </Pressable>
@@ -729,15 +719,15 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointQuickActions}>
-              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Indicazioni')} activeOpacity={0.75}>
+              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Indicazioni')}>
                 <Text style={styles.pointQuickActionIcon}>➤</Text>
                 <Text style={styles.pointQuickActionLabel}>Indicazioni</Text>
               </Pressable>
-              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Segnala un problema')} activeOpacity={0.75}>
+              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Segnala un problema')}>
                 <Text style={styles.pointQuickActionIcon}>⚑</Text>
                 <Text style={styles.pointQuickActionLabel}>Segnala</Text>
               </Pressable>
-              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Aggiungi una foto')} activeOpacity={0.75}>
+              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Aggiungi una foto')}>
                 <Text style={styles.pointQuickActionIcon}>＋</Text>
                 <Text style={styles.pointQuickActionLabel}>Foto</Text>
               </Pressable>
@@ -753,7 +743,7 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointFeatureGrid}>
-              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Recensioni')} activeOpacity={0.75}>
+              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Recensioni')}>
                 <Text style={styles.pointFeatureIcon}>☆</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Recensioni</Text>
@@ -761,7 +751,7 @@ export default function HomeScreen() {
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
               </Pressable>
-              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Foto')} activeOpacity={0.75}>
+              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Foto')}>
                 <Text style={styles.pointFeatureIcon}>▧</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Foto</Text>
@@ -769,7 +759,7 @@ export default function HomeScreen() {
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
               </Pressable>
-              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Aggiornamenti')} activeOpacity={0.75}>
+              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Aggiornamenti')}>
                 <Text style={styles.pointFeatureIcon}>↻</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Aggiornamenti</Text>
@@ -777,7 +767,7 @@ export default function HomeScreen() {
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
               </Pressable>
-              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Altre informazioni')} activeOpacity={0.75}>
+              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Altre informazioni')}>
                 <Text style={styles.pointFeatureIcon}>ⓘ</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Altre informazioni</Text>
@@ -802,7 +792,6 @@ export default function HomeScreen() {
             onPress={() => {
               setFiltersOpen((open) => !open);
             }}
-            activeOpacity={0.75}
             accessibilityLabel="Filtri"
             accessibilityState={{ expanded: filtersOpen }}
           >
@@ -812,7 +801,6 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.addButton}
             onPress={() => showComingSoon('Aggiungi una segnalazione')}
-            activeOpacity={0.75}
             accessibilityLabel="Aggiungi una segnalazione"
           >
             <Text style={styles.addIcon}>＋</Text>
@@ -821,7 +809,6 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.actionButton}
             onPress={centerOnMe}
-            activeOpacity={0.75}
             accessibilityLabel="Centra la mappa sulla mia posizione"
           >
             <Text style={styles.gpsArrow}>➤</Text>
@@ -1065,11 +1052,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   pointQuickAction: {
+    opacity: 1,
     minWidth: 82,
     alignItems: 'center',
     gap: 5,
   },
   pointQuickActionIcon: {
+    opacity: 1,
     width: 40,
     height: 40,
     borderRadius: 14,
@@ -1083,6 +1072,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   pointQuickActionLabel: {
+    opacity: 1,
     color: '#315641',
     fontSize: 10,
     fontWeight: '700',
@@ -1125,6 +1115,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#EDF1ED',
   },
   pointFeatureItem: {
+    opacity: 1,
     minHeight: 58,
     flexDirection: 'row',
     alignItems: 'center',
