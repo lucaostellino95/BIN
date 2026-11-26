@@ -668,6 +668,7 @@ export default function HomeScreen() {
 
       {selectedPoint && (
         <Animated.View
+          collapsable={false}
           style={[
             styles.pointSheet,
             {
