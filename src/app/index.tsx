@@ -279,7 +279,7 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
           ) : subcategoryId === 'parcheggi' ? (
             <Path d={iconPath} fill="none" stroke="#FFFFFF" strokeWidth={2.8} strokeLinecap="round" strokeLinejoin="round" />
           ) : subcategoryId === 'dae' ? (
-            <G transform="translate(-2.2 0) scale(1.2)">
+            <G transform="translate(0 0) scale(1)">
               {/* International AED sign: black field, white heart, black bolt, white cross and lettering. */}
               <Path
                 d="M1 -4 H23 V28 H1 Z"
