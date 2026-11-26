@@ -195,7 +195,7 @@ export default function HomeScreen() {
       stiffness: 260,
       damping: 30,
       mass: 0.8,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start();
   }, [height, pointSheetExpanded, sheetMaxTravel, sheetTranslateY]);
 
