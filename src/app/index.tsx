@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Animated,
+  Easing,
   Platform,
   PanResponder,
   StyleSheet,
@@ -351,6 +352,9 @@ export default function HomeScreen() {
   const [position, setPosition] = useState<Location.LocationObjectCoords | null>(null);
   const [mapRef, setMapRef] = useState<MapView | null>(null);
   const [compassHeading, setCompassHeading] = useState(0);
+  const [compassResetting, setCompassResetting] = useState(false);
+  const compassArrowRotation = useRef(new Animated.Value(0)).current;
+  const compassResetAnimationRef = useRef(false);
   const lastCompassReadAtRef = useRef(0);
   const compassReadPendingRef = useRef(false);
   const compassReadQueuedRef = useRef(false);
@@ -468,8 +472,29 @@ export default function HomeScreen() {
   function orientMapNorth() {
     if (!mapRef) return;
 
-    // Change only the heading: map center, zoom and pitch remain untouched.
+    const currentHeading = ((compassHeading % 360) + 360) % 360;
+    const targetRotation = currentHeading > 180 ? -360 : 0;
+
+    // Animate the compass arrow in sync with the map rotating back to north.
+    compassResetAnimationRef.current = true;
+    setCompassResetting(true);
+    compassArrowRotation.stopAnimation();
+    compassArrowRotation.setValue(-currentHeading);
+
     mapRef.animateCamera({ heading: 0 }, { duration: 500 });
+    Animated.timing(compassArrowRotation, {
+      toValue: targetRotation,
+      duration: 500,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      compassResetAnimationRef.current = false;
+      if (finished) {
+        compassArrowRotation.setValue(0);
+        setCompassHeading(0);
+      }
+      setCompassResetting(false);
+    });
   }
 
   function syncCompassWithMap(force = false) {
@@ -489,6 +514,9 @@ export default function HomeScreen() {
     mapRef.getCamera()
       .then((camera) => {
         const heading = ((camera.heading ?? 0) % 360 + 360) % 360;
+        if (!compassResetAnimationRef.current) {
+          compassArrowRotation.setValue(-heading);
+        }
         setCompassHeading((current) =>
           Math.abs(current - heading) < 0.5 ? current : heading
         );
@@ -663,7 +691,7 @@ export default function HomeScreen() {
         <Text style={styles.settingsIcon}>⚙</Text>
       </TouchableOpacity>
 
-      {position && !selectedPoint && !filtersOpen && Math.min(compassHeading, 360 - compassHeading) > 2 && (
+      {position && !selectedPoint && !filtersOpen && (compassResetting || Math.min(compassHeading, 360 - compassHeading) > 2) && (
         <TouchableOpacity
           style={[
             styles.northButton,
@@ -674,7 +702,17 @@ export default function HomeScreen() {
           accessibilityRole="button"
           accessibilityLabel="Riorienta la mappa verso nord"
         >
-          <View style={{ transform: [{ rotate: `${-compassHeading}deg` }] }}>
+          <Animated.View
+            style={{
+              transform: [{
+                rotate: compassArrowRotation.interpolate({
+                  inputRange: [-360, 0],
+                  outputRange: ['-360deg', '0deg'],
+                  extrapolate: 'clamp',
+                }),
+              }],
+            }}
+          >
             <Svg width={28} height={28} viewBox="0 0 24 24">
               <Path
                 d="M12 1.5 L16.4 15 L12 22.5 L7.6 15 Z"
@@ -686,7 +724,7 @@ export default function HomeScreen() {
               <Path d="M12 1.5 L16.4 15 L12 12.7 L7.6 15 Z" fill="#D94343" />
               <Path d="M7.6 15 L12 12.7 L16.4 15 L12 22.5 Z" fill="#FFFFFF" />
             </Svg>
-          </View>
+          </Animated.View>
         </TouchableOpacity>
       )}
 
