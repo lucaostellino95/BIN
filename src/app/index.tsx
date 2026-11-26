@@ -176,7 +176,7 @@ const PIN_COLORS: Record<string, string> = {
   picnic: '#32865A',
   sport: '#32865A',
   percorsi: '#32865A',
-  dae: '#D45C4D',
+  dae: '#009640',
   'primo-soccorso': '#D45C4D',
   'dispositivi-emergenza': '#D45C4D',
 };
@@ -212,7 +212,7 @@ const PIN_DARK_COLORS: Record<string, string> = {
   picnic: '#205C3B',
   sport: '#205C3B',
   percorsi: '#205C3B',
-  dae: '#A83E33',
+  dae: '#007A36',
   'primo-soccorso': '#A83E33',
   'dispositivi-emergenza': '#A83E33',
 };
@@ -280,12 +280,6 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
           ) : subcategoryId === 'dae' ? (
             <G>
               {/* DAE / ISO 7010 E010-inspired green sign. Cross placed upper-left as requested. */}
-              <Path
-                d="M1 1 H23 V23 H1 Z"
-                fill="#009640"
-                stroke="#FFFFFF"
-                strokeWidth={0.65}
-              />
               <Path
                 d="M12 20 C9 17.7 5 14.3 4 10.7 C3 7.3 5.4 5 8.1 5 C9.8 5 11 5.8 12 7.1 C13 5.8 14.2 5 15.9 5 C18.6 5 21 7.3 20 10.7 C19 14.3 15 17.7 12 20 Z"
                 fill="#FFFFFF"
