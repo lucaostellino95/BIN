@@ -104,7 +104,7 @@ export default function HomeScreen() {
         <Text style={styles.settingsIcon}>⚙</Text>
       </TouchableOpacity>
 
-      <View style={styles.rightActions}>
+      <View style={styles.bottomActions}>
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => showComingSoon('Filtri')}
@@ -115,7 +115,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.actionButton}
+          style={styles.addButton}
           onPress={() => showComingSoon('Aggiungi una segnalazione')}
           activeOpacity={0.75}
           accessibilityLabel="Aggiungi una segnalazione"
@@ -129,13 +129,7 @@ export default function HomeScreen() {
           activeOpacity={0.75}
           accessibilityLabel="Centra la mappa sulla mia posizione"
         >
-          <View style={styles.locationIcon}>
-            <View style={styles.locationTop} />
-            <View style={styles.locationBottom} />
-            <View style={styles.locationLeft} />
-            <View style={styles.locationRight} />
-            <View style={styles.locationDot} />
-          </View>
+          <Text style={styles.gpsArrow}>➤</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -204,80 +198,52 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: '#315641',
   },
-  rightActions: {
+  bottomActions: {
     position: 'absolute',
-    right: 18,
-    top: '42%',
+    bottom: 28,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
+    padding: 8,
+    borderRadius: 22,
+    backgroundColor: 'white',
+    elevation: 7,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.16,
+    shadowRadius: 7,
   },
   actionButton: {
-    width: 50,
-    height: 50,
+    width: 48,
+    height: 48,
     borderRadius: 16,
-    backgroundColor: 'white',
+    backgroundColor: '#F5F7F4',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.12,
-    shadowRadius: 5,
   },
   actionIcon: {
     fontSize: 27,
     color: '#315641',
     lineHeight: 31,
   },
-  addIcon: {
-    fontSize: 34,
-    fontWeight: '300',
-    color: '#315641',
-    lineHeight: 38,
-  },
-  locationIcon: {
-    width: 26,
-    height: 26,
-    alignItems: 'center',
+  addButton: {
+    width: 54,
+    height: 54,
+    borderRadius: 18,
+    backgroundColor: '#204B3A',
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  locationTop: {
-    position: 'absolute',
-    top: 0,
-    width: 4,
-    height: 7,
-    borderRadius: 2,
-    backgroundColor: '#4285F4',
+  addIcon: {
+    fontSize: 35,
+    fontWeight: '300',
+    color: 'white',
+    lineHeight: 39,
   },
-  locationBottom: {
-    position: 'absolute',
-    bottom: 0,
-    width: 4,
-    height: 7,
-    borderRadius: 2,
-    backgroundColor: '#4285F4',
-  },
-  locationLeft: {
-    position: 'absolute',
-    left: 0,
-    width: 7,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#4285F4',
-  },
-  locationRight: {
-    position: 'absolute',
-    right: 0,
-    width: 7,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#4285F4',
-  },
-  locationDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#4285F4',
-    borderWidth: 2,
-    borderColor: 'white',
+  gpsArrow: {
+    color: '#4285F4',
+    fontSize: 27,
+    transform: [{ rotate: '-45deg' }],
   },
 });
