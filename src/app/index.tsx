@@ -353,6 +353,7 @@ export default function HomeScreen() {
   const [compassHeading, setCompassHeading] = useState(0);
   const lastCompassReadAtRef = useRef(0);
   const compassReadPendingRef = useRef(false);
+  const compassReadQueuedRef = useRef(false);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -471,11 +472,16 @@ export default function HomeScreen() {
     mapRef.animateCamera({ heading: 0 }, { duration: 500 });
   }
 
-  function syncCompassWithMap() {
-    if (!mapRef || compassReadPendingRef.current) return;
+  function syncCompassWithMap(force = false) {
+    if (!mapRef) return;
+
+    if (compassReadPendingRef.current) {
+      if (force) compassReadQueuedRef.current = true;
+      return;
+    }
 
     const now = Date.now();
-    if (now - lastCompassReadAtRef.current < 50) return;
+    if (!force && now - lastCompassReadAtRef.current < 50) return;
 
     lastCompassReadAtRef.current = now;
     compassReadPendingRef.current = true;
@@ -492,6 +498,10 @@ export default function HomeScreen() {
       })
       .finally(() => {
         compassReadPendingRef.current = false;
+        if (compassReadQueuedRef.current) {
+          compassReadQueuedRef.current = false;
+          syncCompassWithMap(true);
+        }
       });
   }
 
@@ -603,7 +613,7 @@ export default function HomeScreen() {
           showsCompass={false}
           onPress={handleMapTap}
           onRegionChange={syncCompassWithMap}
-          onRegionChangeComplete={syncCompassWithMap}
+          onRegionChangeComplete={() => syncCompassWithMap(true)}
         >
           <UrlTile
             urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
