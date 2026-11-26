@@ -285,7 +285,14 @@ export default function HomeScreen() {
             accessibilityLabel={filtersExpanded ? 'Riduci pannello' : 'Espandi pannello'}
             accessibilityRole="button"
           >
-            <Text style={styles.expandButtonText}>{filtersExpanded ? '⌄' : '⌃'}</Text>
+            <Text
+              style={[
+                styles.expandButtonText,
+                filtersExpanded && styles.expandButtonTextDown,
+              ]}
+            >
+              ⌃
+            </Text>
           </TouchableOpacity>
           <View style={styles.panelHeader}>
             <View>
@@ -856,6 +863,12 @@ const styles = StyleSheet.create({
     fontSize: 21,
     fontWeight: '700',
     lineHeight: 24,
+    textAlign: 'center',
+    includeFontPadding: false,
+    transform: [{ translateY: 1 }],
+  },
+  expandButtonTextDown: {
+    transform: [{ rotate: '180deg' }, { translateY: 1 }],
   },
   bottomActions: {
     position: 'absolute',
