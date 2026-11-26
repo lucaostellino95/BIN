@@ -461,6 +461,13 @@ export default function HomeScreen() {
     }, 500);
   }
 
+  function orientMapNorth() {
+    if (!mapRef) return;
+
+    // Change only the heading: map center, zoom and pitch remain untouched.
+    mapRef.animateCamera({ heading: 0 }, { duration: 500 });
+  }
+
   function openPointCard(point: DemoPoint & { latitude: number; longitude: number }) {
     setSelectedPoint(point);
     setFiltersOpen(false);
@@ -566,7 +573,7 @@ export default function HomeScreen() {
           }}
           showsUserLocation
           showsMyLocationButton={false}
-          showsCompass
+          showsCompass={false}
           onPress={handleMapTap}
         >
           <UrlTile
@@ -616,6 +623,31 @@ export default function HomeScreen() {
       >
         <Text style={styles.settingsIcon}>⚙</Text>
       </TouchableOpacity>
+
+      {position && !selectedPoint && !filtersOpen && (
+        <TouchableOpacity
+          style={[
+            styles.northButton,
+            isCompactIphone && styles.northButtonIphone,
+          ]}
+          onPress={orientMapNorth}
+          activeOpacity={0.75}
+          accessibilityRole="button"
+          accessibilityLabel="Riorienta la mappa verso nord"
+        >
+          <Svg width={28} height={28} viewBox="0 0 24 24">
+            <Path
+              d="M12 1.5 L16.4 15 L12 22.5 L7.6 15 Z"
+              fill="#FFFFFF"
+              stroke="#65766A"
+              strokeWidth={0.75}
+              strokeLinejoin="round"
+            />
+            <Path d="M12 1.5 L16.4 15 L12 12.7 L7.6 15 Z" fill="#D94343" />
+            <Path d="M7.6 15 L12 12.7 L16.4 15 L12 22.5 Z" fill="#FFFFFF" />
+          </Svg>
+        </TouchableOpacity>
+      )}
 
       {filtersOpen && (
         <View
@@ -1083,6 +1115,27 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 5,
+  },
+  northButton: {
+    position: 'absolute',
+    right: 18,
+    bottom: 92,
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.86)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(232, 238, 232, 0.85)',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
+  },
+  northButtonIphone: {
+    bottom: 176,
   },
   settingsIcon: {
     fontSize: 25,
