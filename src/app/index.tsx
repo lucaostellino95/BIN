@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Alert, Platform, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, useWindowDimensions } from 'react-native';
 import MapView, { UrlTile } from 'react-native-maps';
 import * as Location from 'expo-location';
 
@@ -7,6 +7,8 @@ export default function HomeScreen() {
   const [position, setPosition] = useState<Location.LocationObjectCoords | null>(null);
   const [mapRef, setMapRef] = useState<MapView | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const { width } = useWindowDimensions();
+  const isCompactIphone = Platform.OS === 'ios' && width < 600;
 
   useEffect(() => {
     let subscription: Location.LocationSubscription | null = null;
@@ -104,7 +106,7 @@ export default function HomeScreen() {
         <Text style={styles.settingsIcon}>⚙</Text>
       </TouchableOpacity>
 
-      <View style={styles.bottomActions}>
+      <View style={[styles.bottomActions, isCompactIphone && styles.bottomActionsIphone]}>
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => showComingSoon('Filtri')}
@@ -213,6 +215,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.16,
     shadowRadius: 7,
+  },
+  bottomActionsIphone: {
+    // Expo Go displays its own bottom navigation on iPhone during testing.
+    // Lift BIN's controls above it; standalone builds keep the regular position.
+    bottom: 112,
   },
   actionButton: {
     width: 48,
