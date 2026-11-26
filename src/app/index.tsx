@@ -279,11 +279,30 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
           ) : subcategoryId === 'parcheggi' ? (
             <Path d={iconPath} fill="none" stroke="#FFFFFF" strokeWidth={2.8} strokeLinecap="round" strokeLinejoin="round" />
           ) : subcategoryId === 'dae' ? (
-            <>
-              <Path d="M5 3 H19 Q21 3 21 5 V19 Q21 21 19 21 H5 Q3 21 3 19 V5 Q3 3 5 3 Z" fill="none" stroke="#FFFFFF" strokeWidth={1.8} strokeLinejoin="round" />
-              <Path d="M12 7 C10 5 7 7 8 10 C8.5 12 12 14 12 14 C12 14 15.5 12 16 10 C17 7 14 5 12 7 Z" fill="none" stroke="#FFFFFF" strokeWidth={1.5} strokeLinejoin="round" />
-              <Path d="M12.8 7.7 L10.8 10.1 H12.2 L11.5 12.7 L14 9.8 H12.7 Z" fill="#FFFFFF" />
-            </>
+            <G transform="translate(-2.2 0) scale(1.2)">
+              {/* International AED sign: black field, white heart, black bolt, white cross and lettering. */}
+              <Path
+                d="M1 -4 H23 V28 H1 Z"
+                fill="#050505"
+                stroke="#FFFFFF"
+                strokeWidth={0.65}
+              />
+              <Path
+                d="M12 1 C9 -1 5 -1 3 2 C0 6 3 11 12 17 C21 11 24 6 21 2 C19 -1 15 -1 12 1 Z"
+                fill="#FFFFFF"
+              />
+              <Path
+                d="M13.8 2.1 L8.4 9.1 H11.7 L10.1 14.8 L16.2 7.3 H13.1 L15 2.1 Z"
+                fill="#050505"
+              />
+              <Path
+                d="M18.5 -3 H20.5 V-1 H22.5 V1 H20.5 V3 H18.5 V1 H16.5 V-1 H18.5 Z"
+                fill="#FFFFFF"
+              />
+              <SvgText x={12} y={21.3} fill="#FFFFFF" fontSize={5.2} fontWeight="bold" textAnchor="middle">AED</SvgText>
+              <SvgText x={12} y={24.5} fill="#FFFFFF" fontSize={2.25} fontWeight="600" textAnchor="middle">Automated External</SvgText>
+              <SvgText x={12} y={27.1} fill="#FFFFFF" fontSize={2.45} fontWeight="600" textAnchor="middle">Defibrillator</SvgText>
+            </G>
           ) : subcategoryId === 'rampe' ? (
             <>
               {/* International Symbol of Access (ISA), 1968 — ISO 7001 */}
