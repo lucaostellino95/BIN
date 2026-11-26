@@ -174,6 +174,7 @@ export default function HomeScreen() {
   const [appliedSubcategories, setAppliedSubcategories] = useState<string[] | null>(null);
   const [appliedDistance, setAppliedDistance] = useState('Tutti');
   const [selectedPoint, setSelectedPoint] = useState<(DemoPoint & { latitude: number; longitude: number }) | null>(null);
+  const markerPressRef = useRef(false);
   const [pointSheetExpanded, setPointSheetExpanded] = useState(false);
   const { width, height } = useWindowDimensions();
   const isCompactIphone = Platform.OS === 'ios' && width < 600;
@@ -277,12 +278,15 @@ export default function HomeScreen() {
 
   function openPointCard(point: DemoPoint & { latitude: number; longitude: number }) {
     setSelectedPoint(point);
-    setPointSheetExpanded(false);
     setFiltersOpen(false);
     setFiltersExpanded(false);
   }
 
   function handleMapTap() {
+    if (markerPressRef.current) {
+      markerPressRef.current = false;
+      return;
+    }
     if (filtersOpen) {
       setAppliedSubcategories(selectedSubcategories);
       setAppliedDistance(selectedDistance);
@@ -390,7 +394,13 @@ export default function HomeScreen() {
               key={point.id}
               coordinate={{ latitude: point.latitude, longitude: point.longitude }}
               anchor={{ x: 0.5, y: 1 }}
-              onPress={() => openPointCard(point)}
+              onPress={() => {
+                markerPressRef.current = true;
+                openPointCard(point);
+                setTimeout(() => {
+                  markerPressRef.current = false;
+                }, 250);
+              }}
               tracksViewChanges
             >
               <View style={styles.mapPin}>
@@ -682,6 +692,7 @@ export default function HomeScreen() {
             style={styles.pointSheetScroll}
             contentContainerStyle={styles.pointSheetContent}
             showsVerticalScrollIndicator={false}
+            removeClippedSubviews={false}
           >
             <View style={styles.pointSheetHeader}>
               <View style={styles.pointSheetTitleGroup}>
