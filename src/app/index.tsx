@@ -14,13 +14,107 @@ import MapView, { UrlTile } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const CATEGORIES = [
-  { id: 'acqua', label: 'Acqua', icon: '💧' },
-  { id: 'servizi', label: 'Servizi', icon: '🗑️' },
-  { id: 'accessibilita', label: 'Accessibilità', icon: '♿' },
-  { id: 'comfort', label: 'Comfort', icon: '🪑' },
-  { id: 'animali', label: 'Animali', icon: '🐾' },
-  { id: 'attivita', label: 'Attività', icon: '🏪' },
+  {
+    id: 'acqua',
+    label: 'Acqua',
+    icon: '💧',
+    subcategories: [
+      { id: 'fontanelle', label: 'Fontanelle' },
+      { id: 'acqua-potabile', label: 'Acqua potabile' },
+      { id: 'sorgenti', label: 'Sorgenti' },
+    ],
+  },
+  {
+    id: 'servizi',
+    label: 'Servizi',
+    icon: '🗑️',
+    subcategories: [
+      { id: 'cestini', label: 'Cestini' },
+      { id: 'bagni-pubblici', label: 'Bagni pubblici' },
+      { id: 'distributori-sacchetti', label: 'Distributori sacchetti' },
+    ],
+  },
+  {
+    id: 'accessibilita',
+    label: 'Accessibilità',
+    icon: '♿',
+    subcategories: [
+      { id: 'rampe', label: 'Rampe' },
+      { id: 'ascensori', label: 'Ascensori' },
+      { id: 'percorsi-accessibili', label: 'Percorsi accessibili' },
+      { id: 'parcheggi-riservati', label: 'Parcheggi riservati' },
+    ],
+  },
+  {
+    id: 'comfort',
+    label: 'Comfort',
+    icon: '🪑',
+    subcategories: [
+      { id: 'panchine', label: 'Panchine' },
+      { id: 'tavoli', label: 'Tavoli' },
+      { id: 'aree-riparate', label: 'Aree riparate' },
+      { id: 'punti-ombra', label: 'Punti ombra' },
+    ],
+  },
+  {
+    id: 'animali',
+    label: 'Animali',
+    icon: '🐾',
+    subcategories: [
+      { id: 'aree-cani', label: 'Aree cani' },
+      { id: 'fontanelle-animali', label: 'Fontanelle per animali' },
+      { id: 'pet-friendly', label: 'Attività pet-friendly' },
+    ],
+  },
+  {
+    id: 'attivita',
+    label: 'Attività',
+    icon: '🏪',
+    subcategories: [
+      { id: 'negozi', label: 'Negozi' },
+      { id: 'bar', label: 'Bar' },
+      { id: 'ristoranti', label: 'Ristoranti' },
+      { id: 'servizi-commerciali', label: 'Servizi commerciali' },
+    ],
+  },
+  {
+    id: 'mobilita',
+    label: 'Mobilità',
+    icon: '🚲',
+    subcategories: [
+      { id: 'parcheggi', label: 'Parcheggi' },
+      { id: 'biciclette', label: 'Biciclette' },
+      { id: 'colonnine', label: 'Colonnine' },
+      { id: 'fermate', label: 'Fermate' },
+    ],
+  },
+  {
+    id: 'verde',
+    label: 'Verde e tempo libero',
+    icon: '🌳',
+    subcategories: [
+      { id: 'parchi', label: 'Parchi' },
+      { id: 'giochi', label: 'Aree giochi' },
+      { id: 'picnic', label: 'Aree picnic' },
+      { id: 'sport', label: 'Sport' },
+      { id: 'percorsi', label: 'Percorsi' },
+    ],
+  },
+  {
+    id: 'emergenza',
+    label: 'Emergenza e sicurezza',
+    icon: '🚨',
+    subcategories: [
+      { id: 'dae', label: 'DAE' },
+      { id: 'primo-soccorso', label: 'Primo soccorso' },
+      { id: 'dispositivi-emergenza', label: 'Dispositivi di emergenza' },
+    ],
+  },
 ];
+
+const ALL_SUBCATEGORY_IDS = CATEGORIES.flatMap((category) =>
+  category.subcategories.map((subcategory) => subcategory.id)
+);
 
 const DISTANCES = ['250 m', '500 m', '1 km', '2 km', '5 km', 'Tutti'];
 
@@ -30,9 +124,10 @@ export default function HomeScreen() {
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filtersExpanded, setFiltersExpanded] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    CATEGORIES.map((category) => category.id)
+  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
+    ALL_SUBCATEGORY_IDS
   );
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [selectedDistance, setSelectedDistance] = useState('Tutti');
   const { width, height } = useWindowDimensions();
   const isCompactIphone = Platform.OS === 'ios' && width < 600;
@@ -87,19 +182,39 @@ export default function HomeScreen() {
   }
 
   function toggleCategory(categoryId: string) {
-    setSelectedCategories((current) =>
-      current.includes(categoryId)
-        ? current.filter((id) => id !== categoryId)
-        : [...current, categoryId]
+    const category = CATEGORIES.find((item) => item.id === categoryId);
+    if (!category) return;
+
+    const categoryIds = category.subcategories.map((item) => item.id);
+    const allSelected = categoryIds.every((id) => selectedSubcategories.includes(id));
+
+    setSelectedSubcategories((current) =>
+      allSelected
+        ? current.filter((id) => !categoryIds.includes(id))
+        : Array.from(new Set([...current, ...categoryIds]))
+    );
+  }
+
+  function toggleSubcategory(subcategoryId: string) {
+    setSelectedSubcategories((current) =>
+      current.includes(subcategoryId)
+        ? current.filter((id) => id !== subcategoryId)
+        : [...current, subcategoryId]
     );
   }
 
   function selectAllCategories() {
-    setSelectedCategories(CATEGORIES.map((category) => category.id));
+    setSelectedSubcategories(ALL_SUBCATEGORY_IDS);
   }
 
   function clearCategories() {
-    setSelectedCategories([]);
+    setSelectedSubcategories([]);
+  }
+
+  function resetFilters() {
+    setSelectedSubcategories(ALL_SUBCATEGORY_IDS);
+    setSelectedDistance('Tutti');
+    setExpandedCategory(null);
   }
 
   const filterPanelHeight = filtersExpanded
@@ -200,39 +315,99 @@ export default function HomeScreen() {
               </View>
             </View>
 
-            <View style={styles.categoryGrid}>
+            <View style={styles.categoryList}>
               {CATEGORIES.map((category) => {
-                const selected = selectedCategories.includes(category.id);
+                const selectedCount = category.subcategories.filter((item) =>
+                  selectedSubcategories.includes(item.id)
+                ).length;
+                const allSelected = selectedCount === category.subcategories.length;
+                const partiallySelected = selectedCount > 0 && !allSelected;
+                const expanded = expandedCategory === category.id;
+
                 return (
-                  <TouchableOpacity
-                    key={category.id}
-                    style={[
-                      styles.categoryOption,
-                      selected && styles.categoryOptionSelected,
-                    ]}
-                    onPress={() => toggleCategory(category.id)}
-                    activeOpacity={0.75}
-                    accessibilityRole="checkbox"
-                    accessibilityState={{ checked: selected }}
-                  >
-                    <Text style={styles.categoryIcon}>{category.icon}</Text>
-                    <Text
-                      style={[
-                        styles.categoryLabel,
-                        selected && styles.categoryLabelSelected,
-                      ]}
-                    >
-                      {category.label}
-                    </Text>
-                    <View
-                      style={[
-                        styles.selectionMark,
-                        selected && styles.selectionMarkSelected,
-                      ]}
-                    >
-                      {selected && <Text style={styles.selectionCheck}>✓</Text>}
+                  <View key={category.id} style={styles.categoryAccordion}>
+                    <View style={styles.categoryHeaderRow}>
+                      <TouchableOpacity
+                        style={styles.categoryHeaderButton}
+                        onPress={() => toggleCategory(category.id)}
+                        activeOpacity={0.75}
+                        accessibilityRole="checkbox"
+                        accessibilityState={{ checked: allSelected }}
+                      >
+                        <Text style={styles.categoryIcon}>{category.icon}</Text>
+                        <Text
+                          style={[
+                            styles.categoryLabel,
+                            (allSelected || partiallySelected) && styles.categoryLabelSelected,
+                          ]}
+                        >
+                          {category.label}
+                        </Text>
+                        <Text style={styles.categoryCount}>
+                          {selectedCount}/{category.subcategories.length}
+                        </Text>
+                        <View
+                          style={[
+                            styles.selectionMark,
+                            allSelected && styles.selectionMarkSelected,
+                            partiallySelected && styles.selectionMarkPartial,
+                          ]}
+                        >
+                          {allSelected && <Text style={styles.selectionCheck}>✓</Text>}
+                          {partiallySelected && <View style={styles.selectionPartialLine} />}
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.categoryExpandButton}
+                        onPress={() =>
+                          setExpandedCategory(expanded ? null : category.id)
+                        }
+                        activeOpacity={0.7}
+                        accessibilityLabel={expanded ? 'Nascondi sottocategorie' : 'Mostra sottocategorie'}
+                        accessibilityState={{ expanded }}
+                      >
+                        <Text style={styles.categoryExpandText}>{expanded ? '⌃' : '⌄'}</Text>
+                      </TouchableOpacity>
                     </View>
-                  </TouchableOpacity>
+
+                    {expanded && (
+                      <View style={styles.subcategoryList}>
+                        {category.subcategories.map((subcategory) => {
+                          const selected = selectedSubcategories.includes(subcategory.id);
+                          return (
+                            <TouchableOpacity
+                              key={subcategory.id}
+                              style={[
+                                styles.subcategoryOption,
+                                selected && styles.subcategoryOptionSelected,
+                              ]}
+                              onPress={() => toggleSubcategory(subcategory.id)}
+                              activeOpacity={0.75}
+                              accessibilityRole="checkbox"
+                              accessibilityState={{ checked: selected }}
+                            >
+                              <Text
+                                style={[
+                                  styles.subcategoryLabel,
+                                  selected && styles.subcategoryLabelSelected,
+                                ]}
+                              >
+                                {subcategory.label}
+                              </Text>
+                              <View
+                                style={[
+                                  styles.subcategoryMark,
+                                  selected && styles.subcategoryMarkSelected,
+                                ]}
+                              >
+                                {selected && <Text style={styles.subcategoryCheck}>✓</Text>}
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+                    )}
+                  </View>
                 );
               })}
             </View>
@@ -272,13 +447,16 @@ export default function HomeScreen() {
 
           <View style={styles.panelFooter}>
             <Text style={styles.selectionSummary}>
-              {selectedCategories.length} categorie selezionate
+              {CATEGORIES.filter((category) =>
+                category.subcategories.some((item) => selectedSubcategories.includes(item.id))
+              ).length} categorie · {selectedSubcategories.length} sottocategorie selezionate
             </Text>
             <TouchableOpacity
               style={styles.applyButton}
               onPress={() => {
                 setFiltersOpen(false);
                 setFiltersExpanded(false);
+                resetFilters();
               }}
               activeOpacity={0.8}
             >
@@ -300,7 +478,10 @@ export default function HomeScreen() {
       <View style={[styles.bottomActions, isCompactIphone && styles.bottomActionsIphone]}>
         <TouchableOpacity
           style={[styles.actionButton, filtersOpen && styles.actionButtonActive]}
-          onPress={() => setFiltersOpen((open) => !open)}
+          onPress={() => {
+            if (!filtersOpen) resetFilters();
+            setFiltersOpen((open) => !open);
+          }}
           activeOpacity={0.75}
           accessibilityLabel="Filtri"
           accessibilityState={{ expanded: filtersOpen }}
@@ -474,27 +655,107 @@ const styles = StyleSheet.create({
   quickActionSeparator: {
     color: '#A8B6AA',
   },
-  categoryGrid: {
+  categoryList: {
+    gap: 7,
+  },
+  categoryAccordion: {
+    borderWidth: 1,
+    borderColor: '#E5EBE5',
+    borderRadius: 13,
+    backgroundColor: '#FFFFFF',
+    overflow: 'hidden',
+  },
+  categoryHeaderRow: {
+    minHeight: 46,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryHeaderButton: {
+    flex: 1,
+    minHeight: 46,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+    paddingRight: 7,
+    gap: 8,
+  },
+  categoryExpandButton: {
+    width: 40,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  categoryExpandText: {
+    color: '#789080',
+    fontSize: 19,
+    fontWeight: '700',
+  },
+  categoryCount: {
+    color: '#8A9B8E',
+    fontSize: 11,
+    fontWeight: '600',
+    marginRight: 2,
+  },
+  subcategoryList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    rowGap: 8,
+    paddingHorizontal: 9,
+    paddingTop: 2,
+    paddingBottom: 10,
+    gap: 7,
   },
-  categoryOption: {
-    width: '48.5%',
-    minHeight: 48,
+  subcategoryOption: {
+    minHeight: 34,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
-    borderRadius: 13,
+    paddingVertical: 6,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: '#E5EBE5',
-    backgroundColor: '#FFFFFF',
-    gap: 8,
+    backgroundColor: '#F8FAF8',
+    gap: 7,
   },
-  categoryOptionSelected: {
+  subcategoryOptionSelected: {
+    borderColor: '#A8BEAC',
+    backgroundColor: '#EDF4EE',
+  },
+  subcategoryLabel: {
+    color: '#68796D',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  subcategoryLabelSelected: {
+    color: '#204B3A',
+  },
+  subcategoryMark: {
+    width: 14,
+    height: 14,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#C8D3C9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subcategoryMarkSelected: {
+    backgroundColor: '#315641',
+    borderColor: '#315641',
+  },
+  subcategoryCheck: {
+    color: '#FFFFFF',
+    fontSize: 9,
+    fontWeight: '800',
+    lineHeight: 11,
+  },
+  selectionMarkPartial: {
+    backgroundColor: '#DDE9DF',
     borderColor: '#9AB5A0',
-    backgroundColor: '#F0F5F0',
+  },
+  selectionPartialLine: {
+    width: 8,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: '#315641',
   },
   categoryIcon: {
     fontSize: 19,
