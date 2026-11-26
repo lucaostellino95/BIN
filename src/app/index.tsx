@@ -431,6 +431,7 @@ export default function HomeScreen() {
       <TouchableOpacity
         style={styles.settingsButton}
         onPress={() => showComingSoon('Impostazioni')}
+        activeOpacity={0.75}
         accessibilityLabel="Impostazioni"
       >
         <Text style={styles.settingsIcon}>⚙</Text>
@@ -449,6 +450,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.expandButton}
             onPress={() => setFiltersExpanded((expanded) => !expanded)}
+            activeOpacity={0.7}
             accessibilityLabel={filtersExpanded ? 'Riduci pannello' : 'Espandi pannello'}
             accessibilityRole="button"
           >
@@ -472,6 +474,7 @@ export default function HomeScreen() {
                 setFiltersOpen(false);
                 setFiltersExpanded(false);
               }}
+              activeOpacity={0.7}
               accessibilityLabel="Chiudi filtri"
             >
               <Text style={styles.closeButtonText}>×</Text>
@@ -486,11 +489,11 @@ export default function HomeScreen() {
             <View style={styles.sectionHeading}>
               <Text style={styles.sectionTitle}>Categorie</Text>
               <View style={styles.quickActions}>
-                <TouchableOpacity onPress={selectAllCategories}>
+                <TouchableOpacity onPress={selectAllCategories} activeOpacity={0.7}>
                   <Text style={styles.quickActionText}>Tutte</Text>
                 </TouchableOpacity>
                 <Text style={styles.quickActionSeparator}>·</Text>
-                <TouchableOpacity onPress={clearCategories}>
+                <TouchableOpacity onPress={clearCategories} activeOpacity={0.7}>
                   <Text style={styles.quickActionText}>Nessuna</Text>
                 </TouchableOpacity>
               </View>
@@ -511,6 +514,7 @@ export default function HomeScreen() {
                       <TouchableOpacity
                         style={styles.categoryHeaderButton}
                         onPress={() => toggleCategory(category.id)}
+                        activeOpacity={0.75}
                         accessibilityRole="checkbox"
                         accessibilityState={{ checked: allSelected }}
                       >
@@ -542,6 +546,7 @@ export default function HomeScreen() {
                         onPress={() =>
                           setExpandedCategory(expanded ? null : category.id)
                         }
+                        activeOpacity={0.7}
                         accessibilityLabel={expanded ? 'Nascondi sottocategorie' : 'Mostra sottocategorie'}
                         accessibilityState={{ expanded }}
                       >
@@ -568,6 +573,7 @@ export default function HomeScreen() {
                                 selected && styles.subcategoryOptionSelected,
                               ]}
                               onPress={() => toggleSubcategory(subcategory.id)}
+                              activeOpacity={0.75}
                               accessibilityRole="checkbox"
                               accessibilityState={{ checked: selected }}
                             >
@@ -612,6 +618,7 @@ export default function HomeScreen() {
                       selected && styles.distanceOptionSelected,
                     ]}
                     onPress={() => setSelectedDistance(distance)}
+                    activeOpacity={0.75}
                     accessibilityRole="radio"
                     accessibilityState={{ selected }}
                   >
@@ -639,6 +646,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 style={styles.resetButton}
                 onPress={resetFilters}
+                activeOpacity={0.75}
                 accessibilityRole="button"
               >
                 <Text style={styles.resetButtonText}>Reset</Text>
@@ -646,6 +654,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 style={[styles.applyButton, styles.applyButtonFlex]}
                 onPress={applyFilters}
+                activeOpacity={0.85}
                 accessibilityRole="button"
               >
                 <Text style={styles.applyButtonText}>Applica filtri</Text>
@@ -792,6 +801,7 @@ export default function HomeScreen() {
             onPress={() => {
               setFiltersOpen((open) => !open);
             }}
+            activeOpacity={0.75}
             accessibilityLabel="Filtri"
             accessibilityState={{ expanded: filtersOpen }}
           >
@@ -801,6 +811,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.addButton}
             onPress={() => showComingSoon('Aggiungi una segnalazione')}
+            activeOpacity={0.75}
             accessibilityLabel="Aggiungi una segnalazione"
           >
             <Text style={styles.addIcon}>＋</Text>
@@ -809,6 +820,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.actionButton}
             onPress={centerOnMe}
+            activeOpacity={0.75}
             accessibilityLabel="Centra la mappa sulla mia posizione"
           >
             <Text style={styles.gpsArrow}>➤</Text>
