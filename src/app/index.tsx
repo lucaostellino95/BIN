@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Platform,
+  PanResponder,
   StyleSheet,
   View,
   Text,
@@ -174,6 +175,18 @@ export default function HomeScreen() {
   const [pointSheetExpanded, setPointSheetExpanded] = useState(false);
   const { width, height } = useWindowDimensions();
   const isCompactIphone = Platform.OS === 'ios' && width < 600;
+
+  const sheetPanResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_event, gestureState) =>
+        Math.abs(gestureState.dy) > 6,
+      onPanResponderRelease: (_event, gestureState) => {
+        if (gestureState.dy < -30) setPointSheetExpanded(true);
+        else if (gestureState.dy > 30) setPointSheetExpanded(false);
+        else setPointSheetExpanded((expanded) => !expanded);
+      },
+    })
+  ).current;
 
   useEffect(() => {
     let subscription: Location.LocationSubscription | null = null;
@@ -585,16 +598,16 @@ export default function HomeScreen() {
             },
           ]}
         >
-          <TouchableOpacity
+          <View
             style={styles.sheetHandleArea}
-            onPress={() => setPointSheetExpanded((expanded) => !expanded)}
-            activeOpacity={0.8}
+            {...sheetPanResponder.panHandlers}
+            accessible
             accessibilityRole="button"
-            accessibilityLabel={pointSheetExpanded ? 'Riduci scheda' : 'Espandi scheda'}
+            accessibilityLabel={pointSheetExpanded ? 'Trascina verso il basso per ridurre la scheda' : 'Trascina verso l’alto per espandere la scheda'}
             accessibilityState={{ expanded: pointSheetExpanded }}
           >
             <View style={styles.sheetHandle} />
-          </TouchableOpacity>
+          </View>
 
           <ScrollView
             style={styles.pointSheetScroll}
