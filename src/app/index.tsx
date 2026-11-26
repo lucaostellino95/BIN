@@ -288,7 +288,7 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
                 strokeWidth={0.65}
               />
               <Path
-                d="M12 1 C9 -1 5 -1 3 2 C0 6 3 11 12 17 C21 11 24 6 21 2 C19 -1 15 -1 12 1 Z"
+                d="M12 1 C9 -1 5 -1 3 2 C1 6 4 11 12 17 C20 11 23 6 21 2 C19 -1 15 -1 12 1 Z"
                 fill="#FFFFFF"
               />
               <Path
