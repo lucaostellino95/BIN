@@ -278,29 +278,26 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
           ) : subcategoryId === 'parcheggi' ? (
             <Path d={iconPath} fill="none" stroke="#FFFFFF" strokeWidth={2.8} strokeLinecap="round" strokeLinejoin="round" />
           ) : subcategoryId === 'dae' ? (
-            <G transform="translate(0 0) scale(1)">
-              {/* International AED sign: black field, white heart, black bolt, white cross and lettering. */}
+            <G>
+              {/* DAE / ISO 7010 E010-inspired green sign. Cross placed upper-left as requested. */}
               <Path
-                d="M1 -4 H23 V28 H1 Z"
-                fill="#050505"
+                d="M1 1 H23 V23 H1 Z"
+                fill="#009640"
                 stroke="#FFFFFF"
                 strokeWidth={0.65}
               />
               <Path
-                d="M12 1 C9 -1 5 -1 3 2 C1 6 4 11 12 17 C20 11 23 6 21 2 C19 -1 15 -1 12 1 Z"
+                d="M12 20 C9 17.7 5 14.3 4 10.7 C3 7.3 5.4 5 8.1 5 C9.8 5 11 5.8 12 7.1 C13 5.8 14.2 5 15.9 5 C18.6 5 21 7.3 20 10.7 C19 14.3 15 17.7 12 20 Z"
                 fill="#FFFFFF"
               />
               <Path
-                d="M13.8 2.1 L8.4 9.1 H11.7 L10.1 14.8 L16.2 7.3 H13.1 L15 2.1 Z"
-                fill="#050505"
+                d="M13.2 7.6 L9 13 H11.9 L10.8 17.3 L15.6 11.5 H12.8 L14.5 7.6 Z"
+                fill="#009640"
               />
               <Path
-                d="M18.5 -3 H20.5 V-1 H22.5 V1 H20.5 V3 H18.5 V1 H16.5 V-1 H18.5 Z"
+                d="M3.3 1.7 H5.2 V3.3 H6.8 V5.2 H5.2 V6.8 H3.3 V5.2 H1.7 V3.3 H3.3 Z"
                 fill="#FFFFFF"
               />
-              <SvgText x={12} y={20.8} fill="#FFFFFF" fontSize={4.8} fontWeight="bold" textAnchor="middle">AED</SvgText>
-              <SvgText x={12} y={23.8} fill="#FFFFFF" fontSize={1.9} fontWeight="600" textAnchor="middle">Automated External</SvgText>
-              <SvgText x={12} y={26.2} fill="#FFFFFF" fontSize={2.0} fontWeight="600" textAnchor="middle">Defibrillator</SvgText>
             </G>
           ) : subcategoryId === 'rampe' ? (
             <>
