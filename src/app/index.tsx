@@ -14,6 +14,7 @@ import {
   ScrollView,
 } from 'react-native';
 import MapView, { Marker, UrlTile } from 'react-native-maps';
+import Svg, { Defs, G, LinearGradient, Path, Stop } from 'react-native-svg';
 import * as Location from 'expo-location';
 
 const CATEGORIES = [
@@ -143,6 +144,149 @@ const DEMO_POINTS: DemoPoint[] = [
   { id: 'demo-9', title: 'Rampa accessibile di prova', subcategoryId: 'rampe', icon: '♿', description: 'Punto dimostrativo: rampa per l’accessibilità.', latitudeOffset: 0.0002, longitudeOffset: 0.0028 },
   { id: 'demo-10', title: 'Fermata bus di prova', subcategoryId: 'fermate', icon: '↔', description: 'Punto dimostrativo: fermata del trasporto pubblico.', latitudeOffset: 0.0030, longitudeOffset: 0.0004 },
 ];
+
+const PIN_COLORS: Record<string, string> = {
+  fontanelle: '#249BD1',
+  'acqua-potabile': '#249BD1',
+  sorgenti: '#249BD1',
+  cestini: '#777F88',
+  'bagni-pubblici': '#1769AA',
+  'distributori-sacchetti': '#777F88',
+  rampe: '#815DB5',
+  ascensori: '#815DB5',
+  'percorsi-accessibili': '#815DB5',
+  'parcheggi-riservati': '#815DB5',
+  panchine: '#D99A36',
+  tavoli: '#D99A36',
+  'aree-riparate': '#D99A36',
+  'punti-ombra': '#D99A36',
+  'aree-cani': '#D47791',
+  'fontanelle-animali': '#D47791',
+  'pet-friendly': '#D47791',
+  negozi: '#287C83',
+  bar: '#287C83',
+  ristoranti: '#287C83',
+  'servizi-commerciali': '#287C83',
+  parcheggi: '#536D9D',
+  biciclette: '#536D9D',
+  colonnine: '#536D9D',
+  fermate: '#536D9D',
+  parchi: '#32865A',
+  giochi: '#32865A',
+  picnic: '#32865A',
+  sport: '#32865A',
+  percorsi: '#32865A',
+  dae: '#D45C4D',
+  'primo-soccorso': '#D45C4D',
+  'dispositivi-emergenza': '#D45C4D',
+};
+
+const PIN_DARK_COLORS: Record<string, string> = {
+  fontanelle: '#1675A8',
+  'acqua-potabile': '#1675A8',
+  sorgenti: '#1675A8',
+  cestini: '#555D65',
+  'bagni-pubblici': '#104C80',
+  'distributori-sacchetti': '#555D65',
+  rampe: '#62428F',
+  ascensori: '#62428F',
+  'percorsi-accessibili': '#62428F',
+  'parcheggi-riservati': '#62428F',
+  panchine: '#A96F1D',
+  tavoli: '#A96F1D',
+  'aree-riparate': '#A96F1D',
+  'punti-ombra': '#A96F1D',
+  'aree-cani': '#A94E69',
+  'fontanelle-animali': '#A94E69',
+  'pet-friendly': '#A94E69',
+  negozi: '#185B60',
+  bar: '#185B60',
+  ristoranti: '#185B60',
+  'servizi-commerciali': '#185B60',
+  parcheggi: '#3A5078',
+  biciclette: '#3A5078',
+  colonnine: '#3A5078',
+  fermate: '#3A5078',
+  parchi: '#205C3B',
+  giochi: '#205C3B',
+  picnic: '#205C3B',
+  sport: '#205C3B',
+  percorsi: '#205C3B',
+  dae: '#A83E33',
+  'primo-soccorso': '#A83E33',
+  'dispositivi-emergenza': '#A83E33',
+};
+
+const PIN_ICON_PATHS: Record<string, string> = {
+  fontanelle: 'M12 2 C10 6 5 11 5 15 A7 7 0 0 0 19 15 C19 11 14 6 12 2 Z M8.5 16.5 C9 18 10 19 12 19',
+  'acqua-potabile': 'M12 2 C10 6 5 11 5 15 A7 7 0 0 0 19 15 C19 11 14 6 12 2 Z M8.5 14.5 L11 17 L16 11.5',
+  sorgenti: 'M2 17 L7 11 L11 15 L16 8 L22 17 M3 21 H21 M8 5 C9 3 11 3 12 5 M14 5 C15 3 17 3 18 5',
+  cestini: 'M5 7 H19 M9 7 V4 H15 V7 M7 7 L8 21 H16 L17 7 M10 10 V18 M14 10 V18',
+  'bagni-pubblici': 'M7 4 A2 2 0 1 0 7 8 A2 2 0 0 0 7 4 M17 4 A2 2 0 1 0 17 8 A2 2 0 0 0 17 4 M7 9 V14 M4 12 H10 M7 14 L5 21 M7 14 L9 21 M17 9 V14 M14 12 H20 M17 14 L15 21 M17 14 L19 21',
+  'distributori-sacchetti': 'M7 8 V6 A5 5 0 0 1 17 6 V8 M5 8 H19 L18 21 H6 Z M9 12 V17 M15 12 V17',
+  rampe: 'M7 4 A2 2 0 1 0 7 8 A2 2 0 0 0 7 4 M9 8 L12 12 H17 L19 17 M12 12 L9 17 H5 M5 17 A3 3 0 1 0 11 17 M16 18 A3 3 0 1 0 22 18',
+  ascensori: 'M4 3 H20 V21 H4 Z M12 7 V17 M9 10 L12 7 L15 10 M9 14 L12 17 L15 14',
+  'percorsi-accessibili': 'M3 17 L8 11 L12 15 L17 8 L21 12 M3 21 H21 M7 5 A2 2 0 1 0 7 9 A2 2 0 0 0 7 5',
+  'parcheggi-riservati': 'M7 21 V3 H13 A6 6 0 0 1 13 15 H7 M7 9 H13 A2 2 0 0 0 13 5 H7',
+  panchine: 'M4 12 H20 V17 H4 Z M6 17 V21 M18 17 V21 M5 8 H19 V12 H5 Z',
+  tavoli: 'M3 10 H21 V13 H3 Z M6 13 V21 M18 13 V21 M12 13 V21',
+  'aree-riparate': 'M3 11 L12 4 L21 11 M5 10 V20 H19 V10 M9 20 V14 H15 V20',
+  'punti-ombra': 'M12 3 V21 M3 12 H21 M5.5 5.5 L18.5 18.5 M18.5 5.5 L5.5 18.5 M8 4 A8 8 0 0 1 20 16',
+  'aree-cani': 'M5 8 A2 2 0 1 0 5 4 A2 2 0 0 0 5 8 M12 6 A2 2 0 1 0 12 2 A2 2 0 0 0 12 6 M19 8 A2 2 0 1 0 19 4 A2 2 0 0 0 19 8 M12 12 C8 8 4 12 6 17 C8 22 10 19 12 19 C14 19 16 22 18 17 C20 12 16 8 12 12 Z',
+  'fontanelle-animali': 'M12 2 C10 6 5 11 5 15 A7 7 0 0 0 19 15 C19 11 14 6 12 2 Z M4 21 H20 M7 18 L5 21 M17 18 L19 21',
+  'pet-friendly': 'M5 8 A2 2 0 1 0 5 4 A2 2 0 0 0 5 8 M12 6 A2 2 0 1 0 12 2 A2 2 0 0 0 12 6 M19 8 A2 2 0 1 0 19 4 A2 2 0 0 0 19 8 M12 12 C8 8 4 12 6 17 C8 22 10 19 12 19 C14 19 16 22 18 17 C20 12 16 8 12 12 Z',
+  negozi: 'M4 10 H20 V21 H4 Z M3 10 L5 4 H19 L21 10 M3 10 A3 3 0 0 0 9 10 A3 3 0 0 0 15 10 A3 3 0 0 0 21 10 M9 21 V15 H15 V21',
+  bar: 'M4 5 H18 L17 14 H7 Z M18 7 H20 A3 3 0 0 1 20 13 H17 M9 18 H16 M12 14 V18 M8 21 H17',
+  ristoranti: 'M6 3 V10 M3 3 V8 A3 3 0 0 0 9 8 V3 M6 10 V21 M16 3 C13 7 13 12 17 13 V21 M17 3 V13',
+  'servizi-commerciali': 'M4 5 H20 V19 H4 Z M8 9 H16 M8 13 H16 M8 17 H13',
+  parcheggi: 'M7 21 V3 H13 A6 6 0 0 1 13 15 H7 M7 9 H13 A2 2 0 0 0 13 5 H7',
+  biciclette: 'M5 17 A4 4 0 1 0 5 9 A4 4 0 0 0 5 17 M19 17 A4 4 0 1 0 19 9 A4 4 0 0 0 19 17 M5 13 L10 7 L14 13 H5 L10 13 L14 7 H17',
+  colonnine: 'M7 3 H17 V21 H7 Z M10 7 L14 7 L12 12 L15 12 L9 19 L11 13 H8 Z',
+  fermate: 'M5 3 H19 V17 H5 Z M8 7 H16 V12 H8 Z M8 20 H8.1 M16 20 H16.1 M8 17 V20 M16 17 V20',
+  parchi: 'M12 3 L5 13 H9 L5 19 H19 L15 13 H19 Z M12 19 V22',
+  giochi: 'M4 14 L12 5 L20 14 M6 13 V21 H18 V13 M9 16 H15 V21',
+  picnic: 'M3 10 H21 M5 10 L7 21 M19 10 L17 21 M8 10 L12 3 L16 10 M9 15 H15',
+  sport: 'M12 3 A9 9 0 1 0 12 21 A9 9 0 1 0 12 3 M3 12 H21 M12 3 C8 7 8 17 12 21 M12 3 C16 7 16 17 12 21',
+  percorsi: 'M3 18 L8 12 L12 15 L17 7 L21 10 M3 21 H21 M17 7 H21 V11',
+  dae: 'M12 21 C10 18 3 13 3 8 A5 5 0 0 1 12 5 A5 5 0 0 1 21 8 C21 13 14 18 12 21 Z M13 7 L9 13 H12 L11 17 L16 11 H13 Z',
+  'primo-soccorso': 'M12 3 A9 9 0 1 0 12 21 A9 9 0 1 0 12 3 M12 7 V17 M7 12 H17',
+  'dispositivi-emergenza': 'M5 4 H19 V20 H5 Z M9 8 H15 M12 8 V16 M9 12 H15',
+};
+
+function MapPin({ subcategoryId }: { subcategoryId: string }) {
+  const color = PIN_COLORS[subcategoryId] ?? '#32865A';
+  const darkColor = PIN_DARK_COLORS[subcategoryId] ?? '#205C3B';
+  const iconPath = PIN_ICON_PATHS[subcategoryId] ?? PIN_ICON_PATHS.parchi;
+
+  return (
+    <View style={styles.mapPin}>
+      <Svg width={48} height={58} viewBox="0 0 48 58">
+        <Defs>
+          <LinearGradient id="binPinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <Stop offset="0%" stopColor={color} />
+            <Stop offset="100%" stopColor={darkColor} />
+          </LinearGradient>
+        </Defs>
+        <Path
+          d="M24 2 C12.4 2 3 11.2 3 22.8 C3 36.1 24 55.5 24 55.5 C24 55.5 45 36.1 45 22.8 C45 11.2 35.6 2 24 2 Z"
+          fill="url(#binPinGradient)"
+          stroke="#FFFFFF"
+          strokeWidth={1.7}
+        />
+        <G transform="translate(12 12)">
+          <Path
+            d={iconPath}
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </G>
+      </Svg>
+    </View>
+  );
+}
 
 function distanceBetweenMeters(latitude1: number, longitude1: number, latitude2: number, longitude2: number) {
   const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
@@ -403,12 +547,7 @@ export default function HomeScreen() {
               }}
               tracksViewChanges
             >
-              <View style={styles.mapPin}>
-                <View style={styles.mapPinCircle}>
-                  <Text style={styles.mapPinIcon}>{point.icon}</Text>
-                </View>
-                <View style={styles.mapPinTail} />
-              </View>
+              <MapPin subcategoryId={point.subcategoryId} />
             </Marker>
           ))}
         </MapView>
@@ -909,44 +1048,15 @@ const styles = StyleSheet.create({
     color: '#315641',
   },
   mapPin: {
-    width: 38,
-    height: 45,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  mapPinCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: '#204B3A',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
+    width: 48,
+    height: 58,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.22,
-    shadowRadius: 3,
-  },
-  mapPinIcon: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '800',
-    textAlign: 'center',
-    includeFontPadding: false,
-  },
-  mapPinTail: {
-    position: 'absolute',
-    top: 26,
-    width: 0,
-    height: 0,
-    borderLeftWidth: 7,
-    borderRightWidth: 7,
-    borderTopWidth: 12,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: '#204B3A',
+    elevation: 7,
+    shadowColor: '#10251A',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.28,
+    shadowRadius: 4,
   },
   pointSheet: {
     position: 'absolute',
