@@ -286,9 +286,23 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
             </>
           ) : subcategoryId === 'rampe' ? (
             <>
-              <Circle cx={14} cy={3.5} r={2} fill="#FFFFFF" />
-              <Circle cx={8.5} cy={17} r={5} fill="none" stroke="#FFFFFF" strokeWidth={2.2} />
-              <Path d="M12.5 6.5 L10 11.2 L15 12.5 L18.5 17 H21.5 M12.5 7 L17.2 8.3 L18.8 10.8 M10 11.2 L9.5 13.2 H14.5" fill="none" stroke="#FFFFFF" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
+              {/* International Symbol of Access (ISA), 1968 — ISO 7001 */}
+              <Circle cx={9.1} cy={2.7} r={1.9} fill="#FFFFFF" />
+              <Path
+                d="M8.2 5 L8.8 12.5 L15.5 12.5 L19.5 20.2 L21.8 19.2 M8.6 8.4 H14.6"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth={2.35}
+                strokeLinecap="square"
+                strokeLinejoin="miter"
+              />
+              <Path
+                d="M7 9.3 C3.8 10.8 1.9 13.9 2 17.3 C2.1 20.5 4.8 22.5 8.5 22.5 C11.9 22.5 14.7 20.6 15.5 17.6"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth={1.9}
+                strokeLinecap="square"
+              />
             </>
           ) : (
             <Path
