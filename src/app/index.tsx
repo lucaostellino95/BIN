@@ -10,7 +10,7 @@ import {
   useWindowDimensions,
   ScrollView,
 } from 'react-native';
-import MapView, { UrlTile } from 'react-native-maps';
+import MapView, { Marker, UrlTile } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const CATEGORIES = [
@@ -118,6 +118,47 @@ const ALL_SUBCATEGORY_IDS = CATEGORIES.flatMap((category) =>
 
 const DISTANCES = ['250 m', '500 m', '1 km', '2 km', '5 km', 'Tutti'];
 
+type DemoPoint = {
+  id: string;
+  title: string;
+  subcategoryId: string;
+  icon: string;
+  description: string;
+  latitudeOffset: number;
+  longitudeOffset: number;
+};
+
+const DEMO_POINTS: DemoPoint[] = [
+  { id: 'demo-1', title: 'Fontanella di prova', subcategoryId: 'fontanelle', icon: '◆', description: 'Punto dimostrativo: fontanella pubblica.', latitudeOffset: 0.0011, longitudeOffset: 0.0007 },
+  { id: 'demo-2', title: 'Cestino di prova', subcategoryId: 'cestini', icon: '▤', description: 'Punto dimostrativo: cestino pubblico.', latitudeOffset: -0.0010, longitudeOffset: 0.0011 },
+  { id: 'demo-3', title: 'Panchina di prova', subcategoryId: 'panchine', icon: '▰', description: 'Punto dimostrativo: panchina.', latitudeOffset: 0.0004, longitudeOffset: -0.0015 },
+  { id: 'demo-4', title: 'Bagno pubblico di prova', subcategoryId: 'bagni-pubblici', icon: 'WC', description: 'Punto dimostrativo: bagno pubblico.', latitudeOffset: -0.0018, longitudeOffset: -0.0005 },
+  { id: 'demo-5', title: 'Area cani di prova', subcategoryId: 'aree-cani', icon: '♧', description: 'Punto dimostrativo: area dedicata ai cani.', latitudeOffset: 0.0020, longitudeOffset: 0.0018 },
+  { id: 'demo-6', title: 'Parcheggio di prova', subcategoryId: 'parcheggi', icon: 'P', description: 'Punto dimostrativo: parcheggio.', latitudeOffset: -0.0022, longitudeOffset: 0.0016 },
+  { id: 'demo-7', title: 'Parco di prova', subcategoryId: 'parchi', icon: '♣', description: 'Punto dimostrativo: area verde.', latitudeOffset: 0.0025, longitudeOffset: -0.0017 },
+  { id: 'demo-8', title: 'DAE di prova', subcategoryId: 'dae', icon: '⚡', description: 'Punto dimostrativo: defibrillatore.', latitudeOffset: -0.0027, longitudeOffset: -0.0018 },
+  { id: 'demo-9', title: 'Rampa accessibile di prova', subcategoryId: 'rampe', icon: '♿', description: 'Punto dimostrativo: rampa per l’accessibilità.', latitudeOffset: 0.0002, longitudeOffset: 0.0028 },
+  { id: 'demo-10', title: 'Fermata bus di prova', subcategoryId: 'fermate', icon: '↔', description: 'Punto dimostrativo: fermata del trasporto pubblico.', latitudeOffset: 0.0030, longitudeOffset: 0.0004 },
+];
+
+function distanceBetweenMeters(latitude1: number, longitude1: number, latitude2: number, longitude2: number) {
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+  const earthRadius = 6371000;
+  const latitudeDelta = toRadians(latitude2 - latitude1);
+  const longitudeDelta = toRadians(longitude2 - longitude1);
+  const a =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(toRadians(latitude1)) * Math.cos(toRadians(latitude2)) *
+    Math.sin(longitudeDelta / 2) ** 2;
+  return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function distanceLimitMeters(distance: string) {
+  if (distance === 'Tutti') return Number.POSITIVE_INFINITY;
+  const value = Number.parseFloat(distance);
+  return distance.includes('km') ? value * 1000 : value;
+}
+
 export default function HomeScreen() {
   const [position, setPosition] = useState<Location.LocationObjectCoords | null>(null);
   const [mapRef, setMapRef] = useState<MapView | null>(null);
@@ -129,6 +170,9 @@ export default function HomeScreen() {
   );
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [selectedDistance, setSelectedDistance] = useState('Tutti');
+  const [appliedSubcategories, setAppliedSubcategories] = useState<string[]>(ALL_SUBCATEGORY_IDS);
+  const [appliedDistance, setAppliedDistance] = useState('Tutti');
+  const [selectedPoint, setSelectedPoint] = useState<(DemoPoint & { latitude: number; longitude: number }) | null>(null);
   const { width, height } = useWindowDimensions();
   const isCompactIphone = Platform.OS === 'ios' && width < 600;
 
@@ -216,6 +260,22 @@ export default function HomeScreen() {
     setSelectedDistance('Tutti');
     setExpandedCategory(null);
   }
+
+  const demoPoints = position
+    ? DEMO_POINTS.map((point) => ({
+        ...point,
+        latitude: position.latitude + point.latitudeOffset,
+        longitude: position.longitude + point.longitudeOffset,
+      }))
+    : [];
+
+  const visibleDemoPoints = position
+    ? demoPoints.filter((point) =>
+        appliedSubcategories.includes(point.subcategoryId) &&
+        distanceBetweenMeters(position.latitude, position.longitude, point.latitude, point.longitude) <=
+          distanceLimitMeters(appliedDistance)
+      )
+    : [];
 
   const filterPanelHeight = filtersExpanded
     ? Math.min(height * 0.72, 620)
