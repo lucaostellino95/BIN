@@ -752,47 +752,44 @@ export default function HomeScreen() {
         </Animated.View>
       )}
 
-      <Animated.View
-        pointerEvents={selectedPoint && pointSheetExpanded ? 'none' : 'auto'}
-        style={[
-          styles.bottomActions,
-          !selectedPoint && isCompactIphone && styles.bottomActionsIphone,
-          selectedPoint && {
-            bottom: height * 0.35 + 12,
-            opacity: pointSheetExpanded ? 0 : 1,
-          },
-        ]}
-      >
-        <TouchableOpacity
-          style={[styles.actionButton, filtersOpen && styles.actionButtonActive]}
-          onPress={() => {
-            setFiltersOpen((open) => !open);
-          }}
-          activeOpacity={0.75}
-          accessibilityLabel="Filtri"
-          accessibilityState={{ expanded: filtersOpen }}
+      {!selectedPoint && (
+        <View
+          style={[
+            styles.bottomActions,
+            isCompactIphone && styles.bottomActionsIphone,
+          ]}
         >
-          <Text style={styles.actionIcon}>☷</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.actionButton, filtersOpen && styles.actionButtonActive]}
+            onPress={() => {
+              setFiltersOpen((open) => !open);
+            }}
+            activeOpacity={0.75}
+            accessibilityLabel="Filtri"
+            accessibilityState={{ expanded: filtersOpen }}
+          >
+            <Text style={styles.actionIcon}>☷</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => showComingSoon('Aggiungi una segnalazione')}
-          activeOpacity={0.75}
-          accessibilityLabel="Aggiungi una segnalazione"
-        >
-          <Text style={styles.addIcon}>＋</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => showComingSoon('Aggiungi una segnalazione')}
+            activeOpacity={0.75}
+            accessibilityLabel="Aggiungi una segnalazione"
+          >
+            <Text style={styles.addIcon}>＋</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={centerOnMe}
-          activeOpacity={0.75}
-          accessibilityLabel="Centra la mappa sulla mia posizione"
-        >
-          <Text style={styles.gpsArrow}>➤</Text>
-        </TouchableOpacity>
-      </Animated.View>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={centerOnMe}
+            activeOpacity={0.75}
+            accessibilityLabel="Centra la mappa sulla mia posizione"
+          >
+            <Text style={styles.gpsArrow}>➤</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
