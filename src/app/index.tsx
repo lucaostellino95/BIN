@@ -759,38 +759,46 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointFeatureGrid}>
-              <TouchableOpacity collapsable={false} activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Recensioni')}>
+              <TouchableWithoutFeedback onPress={() => showComingSoon('Recensioni')}>
+                <View collapsable={false} style={styles.pointFeatureItem}>
                 <Text style={styles.pointFeatureIcon}>☆</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Recensioni</Text>
                   <Text style={styles.pointFeatureSubtitle}>Esperienze e valutazioni</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
-              </TouchableOpacity>
-              <TouchableOpacity collapsable={false} activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Foto')}>
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => showComingSoon('Foto')}>
+                <View collapsable={false} style={styles.pointFeatureItem}>
                 <Text style={styles.pointFeatureIcon}>▧</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Foto</Text>
                   <Text style={styles.pointFeatureSubtitle}>Immagini condivise dagli utenti</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
-              </TouchableOpacity>
-              <TouchableOpacity collapsable={false} activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Aggiornamenti')}>
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => showComingSoon('Aggiornamenti')}>
+                <View collapsable={false} style={styles.pointFeatureItem}>
                 <Text style={styles.pointFeatureIcon}>↻</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Aggiornamenti</Text>
                   <Text style={styles.pointFeatureSubtitle}>Verifiche e cronologia del punto</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
-              </TouchableOpacity>
-              <TouchableOpacity collapsable={false} activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Altre informazioni')}>
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => showComingSoon('Altre informazioni')}>
+                <View collapsable={false} style={styles.pointFeatureItem}>
                 <Text style={styles.pointFeatureIcon}>ⓘ</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Altre informazioni</Text>
                   <Text style={styles.pointFeatureSubtitle}>Dettagli e caratteristiche</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
-              </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
           </ScrollView>
         </Animated.View>
