@@ -219,7 +219,7 @@ export default function HomeScreen() {
           Math.min(sheetMaxTravelRef.current, sheetStartYRef.current + gestureState.dy)
         );
         const shouldExpand = gestureState.vy < -0.45 ||
-          (Math.abs(gestureState.vy) <= 0.45 && currentPosition < sheetMaxTravel / 2);
+          (Math.abs(gestureState.vy) <= 0.45 && currentPosition < sheetMaxTravelRef.current / 2);
         setPointSheetExpanded(shouldExpand);
       },
       onPanResponderTerminate: () => {
