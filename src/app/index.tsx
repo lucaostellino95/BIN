@@ -14,7 +14,7 @@ import {
   ScrollView,
 } from 'react-native';
 import MapView, { Marker, UrlTile } from 'react-native-maps';
-import Svg, { Defs, G, LinearGradient, Path, Stop } from 'react-native-svg';
+import Svg, { Defs, G, LinearGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
 import * as Location from 'expo-location';
 
 const CATEGORIES = [
@@ -222,9 +222,9 @@ const PIN_ICON_PATHS: Record<string, string> = {
   'acqua-potabile': 'M12 2 C10 6 5 11 5 15 A7 7 0 0 0 19 15 C19 11 14 6 12 2 Z M8.5 14.5 L11 17 L16 11.5',
   sorgenti: 'M2 17 L7 11 L11 15 L16 8 L22 17 M3 21 H21 M8 5 C9 3 11 3 12 5 M14 5 C15 3 17 3 18 5',
   cestini: 'M5 7 H19 M9 7 V4 H15 V7 M7 7 L8 21 H16 L17 7 M10 10 V18 M14 10 V18',
-  'bagni-pubblici': 'M5 2 A2 2 0 1 0 5 6 A2 2 0 0 0 5 2 M15 2 A2 2 0 1 0 15 6 A2 2 0 0 0 15 2 M3 8 H7 L8 15 H2 Z M4 15 V22 M6 15 V22 M13 8 H17 L19 14 H11 Z M13 14 L11 22 M17 14 L19 22',
+  'bagni-pubblici': '',
   'distributori-sacchetti': 'M7 8 V6 A5 5 0 0 1 17 6 V8 M5 8 H19 L18 21 H6 Z M9 12 V17 M15 12 V17',
-  rampe: 'M8 2 A2 2 0 1 0 8 6 A2 2 0 0 0 8 2 M8 7 L12 10 L17 10 M12 10 L10 15 L15 18 M15 18 A4 4 0 1 0 22 18 A4 4 0 0 0 15 18 M8 8 L5 13 H10',
+  rampe: 'M9 2 A2 2 0 1 0 9 6 A2 2 0 0 0 9 2 M9 7 L13 9 L17 9 L19 13 M13 9 L11 14 L15 17 M15 17 A5 5 0 1 0 23 17 M9 8 L6 13 L11 13',
   ascensori: 'M4 3 H20 V21 H4 Z M12 7 V17 M9 10 L12 7 L15 10 M9 14 L12 17 L15 14',
   'percorsi-accessibili': 'M3 17 L8 11 L12 15 L17 8 L21 12 M3 21 H21 M7 5 A2 2 0 1 0 7 9 A2 2 0 0 0 7 5',
   'parcheggi-riservati': 'M7 21 V3 H13 A6 6 0 0 1 13 15 H7 M7 9 H13 A2 2 0 0 0 13 5 H7',
@@ -248,7 +248,7 @@ const PIN_ICON_PATHS: Record<string, string> = {
   picnic: 'M3 10 H21 M5 10 L7 21 M19 10 L17 21 M8 10 L12 3 L16 10 M9 15 H15',
   sport: 'M12 3 A9 9 0 1 0 12 21 A9 9 0 1 0 12 3 M3 12 H21 M12 3 C8 7 8 17 12 21 M12 3 C16 7 16 17 12 21',
   percorsi: 'M3 18 L8 12 L12 15 L17 7 L21 10 M3 21 H21 M17 7 H21 V11',
-  dae: 'M14 2 L6 13 H11 L9 22 L19 9 H14 Z',
+  dae: 'M5 3 H19 Q21 3 21 5 V19 Q21 21 19 21 H5 Q3 21 3 19 V5 Q3 3 5 3 Z M12 6 C10 4 7 6 8 9 C8.5 11 12 14 12 14 C12 14 15.5 11 16 9 C17 6 14 4 12 6 Z M13 8 L10 11 H12 L11 13 L15 9 H13 Z',
   'primo-soccorso': 'M12 3 A9 9 0 1 0 12 21 A9 9 0 1 0 12 3 M12 7 V17 M7 12 H17',
   'dispositivi-emergenza': 'M5 4 H19 V20 H5 Z M9 8 H15 M12 8 V16 M9 12 H15',
 };
@@ -275,11 +275,9 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
         />
         <G transform="translate(12 12)">
           {subcategoryId === 'bagni-pubblici' ? (
-            <Path d={iconPath} fill="#FFFFFF" stroke="#FFFFFF" strokeWidth={0.45} strokeLinejoin="round" />
+            <SvgText x="12" y="16.5" fill="#FFFFFF" fontSize="10.5" fontWeight="bold" textAnchor="middle" letterSpacing={0.2}>WC</SvgText>
           ) : subcategoryId === 'parcheggi' ? (
-            <>
-              <Path d={iconPath} fill="none" stroke="#FFFFFF" strokeWidth={2.8} strokeLinecap="round" strokeLinejoin="round" />
-            </>
+            <Path d={iconPath} fill="none" stroke="#FFFFFF" strokeWidth={2.8} strokeLinecap="round" strokeLinejoin="round" />
           ) : subcategoryId === 'dae' ? (
             <Path d={iconPath} fill="#FFFFFF" stroke="#FFFFFF" strokeWidth={0.4} strokeLinejoin="round" />
           ) : (
@@ -287,7 +285,7 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
               d={iconPath}
               fill="none"
               stroke="#FFFFFF"
-              strokeWidth={subcategoryId === 'rampe' ? 2 : 1.8}
+              strokeWidth={subcategoryId === 'rampe' ? 2.2 : 1.8}
               strokeLinecap="round"
               strokeLinejoin="round"
             />
