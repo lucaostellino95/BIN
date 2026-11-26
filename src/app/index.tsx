@@ -759,10 +759,7 @@ export default function HomeScreen() {
           !selectedPoint && isCompactIphone && styles.bottomActionsIphone,
           selectedPoint && {
             bottom: height * 0.35 + 12,
-            opacity: sheetTranslateY.interpolate({
-              inputRange: [0, sheetMaxTravel],
-              outputRange: [0, 1],
-            }),
+            opacity: pointSheetExpanded ? 0 : 1,
           },
         ]}
       >
