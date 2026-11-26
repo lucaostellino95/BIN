@@ -165,12 +165,10 @@ export default function HomeScreen() {
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filtersExpanded, setFiltersExpanded] = useState(false);
-  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
-    ALL_SUBCATEGORY_IDS
-  );
+  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [selectedDistance, setSelectedDistance] = useState('Tutti');
-  const [appliedSubcategories, setAppliedSubcategories] = useState<string[]>(ALL_SUBCATEGORY_IDS);
+  const [appliedSubcategories, setAppliedSubcategories] = useState<string[] | null>(null);
   const [appliedDistance, setAppliedDistance] = useState('Tutti');
   const [selectedPoint, setSelectedPoint] = useState<(DemoPoint & { latitude: number; longitude: number }) | null>(null);
   const { width, height } = useWindowDimensions();
@@ -256,7 +254,7 @@ export default function HomeScreen() {
   }
 
   function resetFilters() {
-    setSelectedSubcategories(ALL_SUBCATEGORY_IDS);
+    setSelectedSubcategories([]);
     setSelectedDistance('Tutti');
     setExpandedCategory(null);
   }
@@ -271,7 +269,8 @@ export default function HomeScreen() {
 
   const visibleDemoPoints = position
     ? demoPoints.filter((point) =>
-        appliedSubcategories.includes(point.subcategoryId) &&
+        (!appliedSubcategories || appliedSubcategories.length === 0 ||
+          appliedSubcategories.includes(point.subcategoryId)) &&
         distanceBetweenMeters(position.latitude, position.longitude, point.latitude, point.longitude) <=
           distanceLimitMeters(appliedDistance)
       )
