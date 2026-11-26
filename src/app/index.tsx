@@ -381,7 +381,14 @@ export default function HomeScreen() {
                         accessibilityLabel={expanded ? 'Nascondi sottocategorie' : 'Mostra sottocategorie'}
                         accessibilityState={{ expanded }}
                       >
-                        <Text style={styles.categoryExpandText}>{expanded ? '⌃' : '⌄'}</Text>
+                        <Text
+                          style={[
+                            styles.categoryExpandText,
+                            expanded && styles.categoryExpandTextUp,
+                          ]}
+                        >
+                          ⌄
+                        </Text>
                       </TouchableOpacity>
                     </View>
 
@@ -688,6 +695,13 @@ const styles = StyleSheet.create({
     color: '#789080',
     fontSize: 19,
     fontWeight: '700',
+    lineHeight: 22,
+    textAlign: 'center',
+    includeFontPadding: false,
+    transform: [{ translateY: -1 }],
+  },
+  categoryExpandTextUp: {
+    transform: [{ rotate: '180deg' }, { translateY: -1 }],
   },
   categoryCount: {
     color: '#8A9B8E',
