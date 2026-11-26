@@ -4,7 +4,6 @@ import {
   Animated,
   Platform,
   PanResponder,
-  Pressable,
   StyleSheet,
   View,
   Text,
@@ -708,7 +707,7 @@ export default function HomeScreen() {
                   </Text>
                 </View>
               </View>
-              <Pressable
+              <TouchableOpacity activeOpacity={1}
                 style={styles.pointCardClose}
                 onPress={() => {
                   setSelectedPoint(null);
@@ -717,7 +716,7 @@ export default function HomeScreen() {
                 accessibilityLabel="Chiudi scheda punto"
               >
                 <Text style={styles.pointCardCloseText}>×</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.pointPhotoPlaceholder}>
@@ -729,18 +728,18 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointQuickActions}>
-              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Indicazioni')}>
+              <TouchableOpacity activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Indicazioni')}>
                 <Text style={styles.pointQuickActionIcon}>➤</Text>
                 <Text style={styles.pointQuickActionLabel}>Indicazioni</Text>
-              </Pressable>
-              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Segnala un problema')}>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Segnala un problema')}>
                 <Text style={styles.pointQuickActionIcon}>⚑</Text>
                 <Text style={styles.pointQuickActionLabel}>Segnala</Text>
-              </Pressable>
-              <Pressable style={styles.pointQuickAction} onPress={() => showComingSoon('Aggiungi una foto')}>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Aggiungi una foto')}>
                 <Text style={styles.pointQuickActionIcon}>＋</Text>
                 <Text style={styles.pointQuickActionLabel}>Foto</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.pointInfoSection}>
@@ -753,38 +752,38 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointFeatureGrid}>
-              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Recensioni')}>
+              <TouchableOpacity activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Recensioni')}>
                 <Text style={styles.pointFeatureIcon}>☆</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Recensioni</Text>
                   <Text style={styles.pointFeatureSubtitle}>Esperienze e valutazioni</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
-              </Pressable>
-              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Foto')}>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Foto')}>
                 <Text style={styles.pointFeatureIcon}>▧</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Foto</Text>
                   <Text style={styles.pointFeatureSubtitle}>Immagini condivise dagli utenti</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
-              </Pressable>
-              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Aggiornamenti')}>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Aggiornamenti')}>
                 <Text style={styles.pointFeatureIcon}>↻</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Aggiornamenti</Text>
                   <Text style={styles.pointFeatureSubtitle}>Verifiche e cronologia del punto</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
-              </Pressable>
-              <Pressable style={styles.pointFeatureItem} onPress={() => showComingSoon('Altre informazioni')}>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={1} style={styles.pointFeatureItem} onPress={() => showComingSoon('Altre informazioni')}>
                 <Text style={styles.pointFeatureIcon}>ⓘ</Text>
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Altre informazioni</Text>
                   <Text style={styles.pointFeatureSubtitle}>Dettagli e caratteristiche</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </Animated.View>
