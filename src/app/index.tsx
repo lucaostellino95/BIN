@@ -596,7 +596,6 @@ export default function HomeScreen() {
         <TouchableOpacity
           style={[styles.actionButton, filtersOpen && styles.actionButtonActive]}
           onPress={() => {
-            if (!filtersOpen) resetFilters();
             setFiltersOpen((open) => !open);
           }}
           activeOpacity={0.75}
