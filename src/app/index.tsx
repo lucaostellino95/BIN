@@ -350,6 +350,9 @@ function distanceLimitMeters(distance: string) {
 export default function HomeScreen() {
   const [position, setPosition] = useState<Location.LocationObjectCoords | null>(null);
   const [mapRef, setMapRef] = useState<MapView | null>(null);
+  const [compassHeading, setCompassHeading] = useState(0);
+  const lastCompassReadAtRef = useRef(0);
+  const compassReadPendingRef = useRef(false);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -468,6 +471,30 @@ export default function HomeScreen() {
     mapRef.animateCamera({ heading: 0 }, { duration: 500 });
   }
 
+  function syncCompassWithMap() {
+    if (!mapRef || compassReadPendingRef.current) return;
+
+    const now = Date.now();
+    if (now - lastCompassReadAtRef.current < 50) return;
+
+    lastCompassReadAtRef.current = now;
+    compassReadPendingRef.current = true;
+
+    mapRef.getCamera()
+      .then((camera) => {
+        const heading = ((camera.heading ?? 0) % 360 + 360) % 360;
+        setCompassHeading((current) =>
+          Math.abs(current - heading) < 0.5 ? current : heading
+        );
+      })
+      .catch(() => {
+        // Keep the last known compass direction if the native camera is unavailable.
+      })
+      .finally(() => {
+        compassReadPendingRef.current = false;
+      });
+  }
+
   function openPointCard(point: DemoPoint & { latitude: number; longitude: number }) {
     setSelectedPoint(point);
     setFiltersOpen(false);
@@ -575,6 +602,8 @@ export default function HomeScreen() {
           showsMyLocationButton={false}
           showsCompass={false}
           onPress={handleMapTap}
+          onRegionChange={syncCompassWithMap}
+          onRegionChangeComplete={syncCompassWithMap}
         >
           <UrlTile
             urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -635,17 +664,19 @@ export default function HomeScreen() {
           accessibilityRole="button"
           accessibilityLabel="Riorienta la mappa verso nord"
         >
-          <Svg width={28} height={28} viewBox="0 0 24 24">
-            <Path
-              d="M12 1.5 L16.4 15 L12 22.5 L7.6 15 Z"
-              fill="#FFFFFF"
-              stroke="#65766A"
-              strokeWidth={0.75}
-              strokeLinejoin="round"
-            />
-            <Path d="M12 1.5 L16.4 15 L12 12.7 L7.6 15 Z" fill="#D94343" />
-            <Path d="M7.6 15 L12 12.7 L16.4 15 L12 22.5 Z" fill="#FFFFFF" />
-          </Svg>
+          <View style={{ transform: [{ rotate: `${-compassHeading}deg` }] }}>
+            <Svg width={28} height={28} viewBox="0 0 24 24">
+              <Path
+                d="M12 1.5 L16.4 15 L12 22.5 L7.6 15 Z"
+                fill="#FFFFFF"
+                stroke="#65766A"
+                strokeWidth={0.75}
+                strokeLinejoin="round"
+              />
+              <Path d="M12 1.5 L16.4 15 L12 12.7 L7.6 15 Z" fill="#D94343" />
+              <Path d="M7.6 15 L12 12.7 L16.4 15 L12 22.5 Z" fill="#FFFFFF" />
+            </Svg>
+          </View>
         </TouchableOpacity>
       )}
 
