@@ -278,7 +278,15 @@ export default function HomeScreen() {
             },
           ]}
         >
-          <View style={styles.panelHandle} />
+          <TouchableOpacity
+            style={styles.expandButton}
+            onPress={() => setFiltersExpanded((expanded) => !expanded)}
+            activeOpacity={0.7}
+            accessibilityLabel={filtersExpanded ? 'Riduci pannello' : 'Espandi pannello'}
+            accessibilityRole="button"
+          >
+            <Text style={styles.expandButtonText}>{filtersExpanded ? '⌄' : '⌃'}</Text>
+          </TouchableOpacity>
           <View style={styles.panelHeader}>
             <View>
               <Text style={styles.panelTitle}>Filtra la mappa</Text>
@@ -464,14 +472,6 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={styles.expandButton}
-            onPress={() => setFiltersExpanded((expanded) => !expanded)}
-            activeOpacity={0.7}
-            accessibilityLabel={filtersExpanded ? 'Riduci pannello' : 'Espandi pannello'}
-          >
-            <Text style={styles.expandButtonText}>{filtersExpanded ? '⌄' : '⌃'}</Text>
-          </TouchableOpacity>
         </View>
       )}
 
@@ -587,14 +587,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 12,
-  },
-  panelHandle: {
-    alignSelf: 'center',
-    width: 38,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#D9E1DA',
-    marginBottom: 13,
   },
   panelHeader: {
     flexDirection: 'row',
@@ -850,18 +842,20 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   expandButton: {
-    position: 'absolute',
-    top: 8,
-    right: 58,
-    width: 26,
-    height: 24,
+    alignSelf: 'center',
+    width: 42,
+    height: 30,
+    marginBottom: 2,
+    borderRadius: 15,
+    backgroundColor: '#F1F5F1',
     alignItems: 'center',
     justifyContent: 'center',
   },
   expandButtonText: {
-    color: '#8A9B8E',
-    fontSize: 19,
+    color: '#315641',
+    fontSize: 21,
     fontWeight: '700',
+    lineHeight: 24,
   },
   bottomActions: {
     position: 'absolute',
