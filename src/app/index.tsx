@@ -171,6 +171,7 @@ export default function HomeScreen() {
   const [appliedSubcategories, setAppliedSubcategories] = useState<string[] | null>(null);
   const [appliedDistance, setAppliedDistance] = useState('Tutti');
   const [selectedPoint, setSelectedPoint] = useState<(DemoPoint & { latitude: number; longitude: number }) | null>(null);
+  const [selectedPointScreenPosition, setSelectedPointScreenPosition] = useState<{ x: number; y: number } | null>(null);
   const { width, height } = useWindowDimensions();
   const isCompactIphone = Platform.OS === 'ios' && width < 600;
 
@@ -217,6 +218,32 @@ export default function HomeScreen() {
       latitudeDelta: 0.008,
       longitudeDelta: 0.008,
     }, 500);
+  }
+
+  async function openPointCard(point: DemoPoint & { latitude: number; longitude: number }) {
+    if (!mapRef) return;
+
+    try {
+      const screenPosition = await mapRef.pointForCoordinate({
+        latitude: point.latitude,
+        longitude: point.longitude,
+      });
+      setSelectedPoint(point);
+      setSelectedPointScreenPosition(screenPosition);
+    } catch {
+      setSelectedPoint(point);
+      setSelectedPointScreenPosition({
+        x: width / 2,
+        y: height / 2,
+      });
+    }
+  }
+
+  function closeMapOverlays() {
+    setFiltersOpen(false);
+    setFiltersExpanded(false);
+    setSelectedPoint(null);
+    setSelectedPointScreenPosition(null);
   }
 
   function showComingSoon(feature: string) {
@@ -295,15 +322,7 @@ export default function HomeScreen() {
           showsUserLocation
           showsMyLocationButton={false}
           showsCompass
-          onPress={() => {
-            if (filtersOpen) {
-              setFiltersOpen(false);
-              setFiltersExpanded(false);
-            }
-            if (selectedPoint) {
-              setSelectedPoint(null);
-            }
-          }}
+          onPress={closeMapOverlays}
         >
           <UrlTile
             urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -315,7 +334,7 @@ export default function HomeScreen() {
               key={point.id}
               coordinate={{ latitude: point.latitude, longitude: point.longitude }}
               anchor={{ x: 0.5, y: 1 }}
-              onPress={() => setSelectedPoint(point)}
+              onPress={() => openPointCard(point)}
               tracksViewChanges
             >
               <View style={styles.mapPin}>
@@ -563,6 +582,7 @@ export default function HomeScreen() {
                 setAppliedSubcategories(selectedSubcategories);
                 setAppliedDistance(selectedDistance);
                 setSelectedPoint(null);
+                setSelectedPointScreenPosition(null);
                 setFiltersOpen(false);
                 setFiltersExpanded(false);
               }}
@@ -575,16 +595,19 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {selectedPoint && (
-        <View style={[styles.pointCard, { bottom: isCompactIphone ? 180 : 96 }]}>
-          <TouchableOpacity
-            style={styles.pointCardClose}
-            onPress={() => setSelectedPoint(null)}
-            accessibilityLabel="Chiudi scheda punto"
-          >
-            <Text style={styles.pointCardCloseText}>×</Text>
-          </TouchableOpacity>
-          <View style={styles.pointCardHeading}>
+      {selectedPoint && selectedPointScreenPosition && (
+        <View
+          style={[
+            styles.pointCard,
+            {
+              left: Math.max(12, Math.min(selectedPointScreenPosition.x - 145, width - 302)),
+              top: selectedPointScreenPosition.y > 190
+                ? selectedPointScreenPosition.y - 164
+                : selectedPointScreenPosition.y + 22,
+            },
+          ]}
+        >
+          <View style={styles.pointCardTopRow}>
             <View style={styles.pointCardIcon}>
               <Text style={styles.pointCardIconText}>{selectedPoint.icon}</Text>
             </View>
@@ -595,9 +618,23 @@ export default function HomeScreen() {
                   .find((subcategory) => subcategory.id === selectedPoint.subcategoryId)?.label}
               </Text>
             </View>
+            <TouchableOpacity
+              style={styles.pointCardClose}
+              onPress={() => {
+                setSelectedPoint(null);
+                setSelectedPointScreenPosition(null);
+              }}
+              accessibilityLabel="Chiudi scheda punto"
+              activeOpacity={0.7}
+            >
+              <Text style={styles.pointCardCloseText}>×</Text>
+            </TouchableOpacity>
           </View>
           <Text style={styles.pointCardDescription}>{selectedPoint.description}</Text>
-          <Text style={styles.demoNotice}>Punto dimostrativo · posizione non reale</Text>
+          <View style={styles.pointCardFooter}>
+            <View style={styles.demoDot} />
+            <Text style={styles.demoNotice}>Punto dimostrativo · posizione non reale</Text>
+          </View>
         </View>
       )}
 
@@ -740,39 +777,35 @@ const styles = StyleSheet.create({
   },
   pointCard: {
     position: 'absolute',
-    left: 16,
-    right: 16,
+    width: 290,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    padding: 16,
-    paddingRight: 44,
-    elevation: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
+    padding: 14,
+    elevation: 14,
+    shadowColor: '#173B2A',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E8EEE8',
+  },
+  pointCardTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   pointCardClose: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 30,
-    height: 30,
+    width: 29,
+    height: 29,
     borderRadius: 10,
     backgroundColor: '#F1F5F1',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 1,
   },
   pointCardCloseText: {
     color: '#315641',
     fontSize: 22,
     lineHeight: 25,
-  },
-  pointCardHeading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 11,
   },
   pointCardIcon: {
     width: 38,
@@ -792,23 +825,37 @@ const styles = StyleSheet.create({
   },
   pointCardTitle: {
     color: '#204B3A',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
+    flexShrink: 1,
   },
   pointCardCategory: {
     color: '#64806B',
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 3,
   },
   pointCardDescription: {
     color: '#526357',
-    fontSize: 13,
+    fontSize: 12,
+    lineHeight: 17,
     marginTop: 12,
+  },
+  pointCardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    gap: 6,
+  },
+  demoDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#A8B9AA',
   },
   demoNotice: {
     color: '#9AA69D',
     fontSize: 10,
-    marginTop: 8,
   },
   filterPanel: {
     position: 'absolute',
