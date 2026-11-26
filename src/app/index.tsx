@@ -334,6 +334,13 @@ export default function HomeScreen() {
     setExpandedCategory(null);
   }
 
+  function applyFilters() {
+    setAppliedSubcategories(selectedSubcategories);
+    setAppliedDistance(selectedDistance);
+    setFiltersOpen(false);
+    setFiltersExpanded(false);
+  }
+
   const demoPoints = position
     ? DEMO_POINTS.map((point) => ({
         ...point,
@@ -624,7 +631,25 @@ export default function HomeScreen() {
                 category.subcategories.some((item) => selectedSubcategories.includes(item.id))
               ).length} categorie · {selectedSubcategories.length} sottocategorie selezionate
             </Text>
-            <Text style={styles.tapHint}>Tocca la mappa per applicare i filtri</Text>
+            <View style={styles.filterFooterButtons}>
+              <TouchableOpacity
+                style={styles.resetButton}
+                onPress={resetFilters}
+                activeOpacity={0.75}
+                accessibilityRole="button"
+              >
+                <Text style={styles.resetButtonText}>Reset</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.applyButton, styles.applyButtonFlex]}
+                onPress={applyFilters}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+              >
+                <Text style={styles.applyButtonText}>Applica filtri</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.tapHint}>Puoi anche toccare la mappa per applicarli</Text>
           </View>
 
         </View>
@@ -636,6 +661,7 @@ export default function HomeScreen() {
             styles.pointSheet,
             {
               height: height * 0.78,
+              opacity: 1,
               transform: [{ translateY: sheetTranslateY }],
             },
           ]}
@@ -1384,6 +1410,31 @@ const styles = StyleSheet.create({
     paddingTop: 11,
     marginTop: 7,
     gap: 5,
+  },
+  filterFooterButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 9,
+    marginTop: 4,
+  },
+  resetButton: {
+    height: 43,
+    minWidth: 82,
+    paddingHorizontal: 16,
+    borderRadius: 14,
+    backgroundColor: '#F1F5F1',
+    borderWidth: 1,
+    borderColor: '#E5EBE5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  resetButtonText: {
+    color: '#315641',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  applyButtonFlex: {
+    flex: 1,
   },
   selectionSummary: {
     color: '#64806B',
