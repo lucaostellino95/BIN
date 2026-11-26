@@ -140,7 +140,7 @@ const DEMO_POINTS: DemoPoint[] = [
   { id: 'demo-5', title: 'Area cani di prova', subcategoryId: 'aree-cani', icon: '♧', description: 'Punto dimostrativo: area dedicata ai cani.', latitudeOffset: 0.0020, longitudeOffset: 0.0018 },
   { id: 'demo-6', title: 'Parcheggio di prova', subcategoryId: 'parcheggi', icon: 'P', description: 'Punto dimostrativo: parcheggio.', latitudeOffset: -0.0022, longitudeOffset: 0.0016 },
   { id: 'demo-7', title: 'Parco di prova', subcategoryId: 'parchi', icon: '♣', description: 'Punto dimostrativo: area verde.', latitudeOffset: 0.0025, longitudeOffset: -0.0017 },
-  { id: 'demo-8', title: 'DAE di prova', subcategoryId: 'dae', icon: '⚡', description: 'Punto dimostrativo: defibrillatore.', latitudeOffset: -0.0027, longitudeOffset: -0.0018 },
+  { id: 'demo-8', title: 'DAE di prova', subcategoryId: 'dae', icon: 'AED', description: 'Punto dimostrativo: defibrillatore.', latitudeOffset: -0.0027, longitudeOffset: -0.0018 },
   { id: 'demo-9', title: 'Rampa accessibile di prova', subcategoryId: 'rampe', icon: '♿', description: 'Punto dimostrativo: rampa per l’accessibilità.', latitudeOffset: 0.0002, longitudeOffset: 0.0028 },
   { id: 'demo-10', title: 'Fermata bus di prova', subcategoryId: 'fermate', icon: '↔', description: 'Punto dimostrativo: fermata del trasporto pubblico.', latitudeOffset: 0.0030, longitudeOffset: 0.0004 },
 ];
@@ -248,7 +248,6 @@ const PIN_ICON_PATHS: Record<string, string> = {
   picnic: 'M3 10 H21 M5 10 L7 21 M19 10 L17 21 M8 10 L12 3 L16 10 M9 15 H15',
   sport: 'M12 3 A9 9 0 1 0 12 21 A9 9 0 1 0 12 3 M3 12 H21 M12 3 C8 7 8 17 12 21 M12 3 C16 7 16 17 12 21',
   percorsi: 'M3 18 L8 12 L12 15 L17 7 L21 10 M3 21 H21 M17 7 H21 V11',
-  dae: 'M5 3 H19 Q21 3 21 5 V19 Q21 21 19 21 H5 Q3 21 3 19 V5 Q3 3 5 3 Z M12 6 C10 4 7 6 8 9 C8.5 11 12 14 12 14 C12 14 15.5 11 16 9 C17 6 14 4 12 6 Z M13 8 L10 11 H12 L11 13 L15 9 H13 Z',
   'primo-soccorso': 'M12 3 A9 9 0 1 0 12 21 A9 9 0 1 0 12 3 M12 7 V17 M7 12 H17',
   'dispositivi-emergenza': 'M5 4 H19 V20 H5 Z M9 8 H15 M12 8 V16 M9 12 H15',
 };
