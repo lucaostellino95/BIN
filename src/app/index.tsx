@@ -14,7 +14,7 @@ import {
   ScrollView,
 } from 'react-native';
 import MapView, { Marker, UrlTile } from 'react-native-maps';
-import Svg, { Defs, G, LinearGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Defs, G, LinearGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
 import * as Location from 'expo-location';
 
 const CATEGORIES = [
@@ -152,7 +152,7 @@ const PIN_COLORS: Record<string, string> = {
   cestini: '#777F88',
   'bagni-pubblici': '#1769AA',
   'distributori-sacchetti': '#777F88',
-  rampe: '#815DB5',
+  rampe: '',
   ascensori: '#815DB5',
   'percorsi-accessibili': '#815DB5',
   'parcheggi-riservati': '#815DB5',
@@ -282,7 +282,14 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
             <>
               <Path d="M5 3 H19 Q21 3 21 5 V19 Q21 21 19 21 H5 Q3 21 3 19 V5 Q3 3 5 3 Z" fill="none" stroke="#FFFFFF" strokeWidth={1.8} strokeLinejoin="round" />
               <Path d="M12 7 C10 5 7 7 8 10 C8.5 12 12 14 12 14 C12 14 15.5 12 16 10 C17 7 14 5 12 7 Z" fill="none" stroke="#FFFFFF" strokeWidth={1.5} strokeLinejoin="round" />
-              <Path d="M14 8 L10 12 H12 L11 16 L16 11 H13 Z" fill="#FFFFFF" />
+              <Path d="M12.8 7.7 L10.8 10.1 H12.2 L11.5 12.7 L14 9.8 H12.7 Z" fill="#FFFFFF" />
+            </>
+          ) : subcategoryId === 'rampe' ? (
+            <>
+              <Circle cx={8} cy={4} r={2} fill="#FFFFFF" />
+              <Path d="M8 7 L11 10.5 L15 10.5 M10.5 10 L8 13.2 L11.5 14.5 L13.5 16.5 M11.5 14.5 L8.5 16.5" fill="none" stroke="#FFFFFF" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+              <Circle cx={15} cy={17} r={4.6} fill="none" stroke="#FFFFFF" strokeWidth={2.1} />
+              <Path d="M8.5 16.5 H11.5" fill="none" stroke="#FFFFFF" strokeWidth={2.1} strokeLinecap="round" />
             </>
           ) : (
             <Path
