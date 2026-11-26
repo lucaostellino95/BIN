@@ -8,6 +8,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   ActivityIndicator,
   useWindowDimensions,
   ScrollView,
@@ -728,18 +729,24 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointQuickActions}>
-              <TouchableOpacity collapsable={false} activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Indicazioni')}>
+              <TouchableWithoutFeedback onPress={() => showComingSoon('Indicazioni')}>
+                <View collapsable={false} style={styles.pointQuickAction}>
                 <Text style={styles.pointQuickActionIcon}>➤</Text>
                 <Text style={styles.pointQuickActionLabel}>Indicazioni</Text>
-              </TouchableOpacity>
-              <TouchableOpacity collapsable={false} activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Segnala un problema')}>
+              </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => showComingSoon('Segnala un problema')}>
+                <View collapsable={false} style={styles.pointQuickAction}>
                 <Text style={styles.pointQuickActionIcon}>⚑</Text>
                 <Text style={styles.pointQuickActionLabel}>Segnala</Text>
-              </TouchableOpacity>
-              <TouchableOpacity collapsable={false} activeOpacity={1} style={styles.pointQuickAction} onPress={() => showComingSoon('Aggiungi una foto')}>
+              </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => showComingSoon('Aggiungi una foto')}>
+                <View collapsable={false} style={styles.pointQuickAction}>
                 <Text style={styles.pointQuickActionIcon}>＋</Text>
                 <Text style={styles.pointQuickActionLabel}>Foto</Text>
-              </TouchableOpacity>
+              </View>
+              </TouchableWithoutFeedback>
             </View>
 
             <View style={styles.pointInfoSection}>
