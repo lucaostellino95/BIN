@@ -1322,7 +1322,7 @@ export default function HomeScreen() {
         >
           <View style={styles.reportModalBackdrop}>
             <View style={styles.reportModalCard}>
-              <Text style={styles.reportModalTitle}>Segnala un problema</Text>
+              <Text style={styles.reportModalTitle}>Contribuisci</Text>
               <Text style={styles.reportModalSubtitle}>{selectedPoint?.title}</Text>
               <ScrollView
                 style={styles.reportModalScroll}
