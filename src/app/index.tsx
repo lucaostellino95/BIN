@@ -3,6 +3,7 @@ import {
   Alert,
   Animated,
   Modal,
+  KeyboardAvoidingView,
   TextInput,
   Platform,
   PanResponder,
@@ -428,7 +429,8 @@ export default function HomeScreen() {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [selectedReportType, setSelectedReportType] = useState('Non funziona');
   const [reportDetails, setReportDetails] = useState('');
-  const [pointReports, setPointReports] = useState<Array<{ pointId: string; type: string; details: string; createdAt: number }>>([]);
+  const [pointReports, setPointReports] = useState<Array<{ pointId: string; type: string; details: string; createdAt: number; lastConfirmedAt?: number }>>([]);
+  const [showAllPointReports, setShowAllPointReports] = useState(false);
   const markerPressRef = useRef(false);
   const [pointSheetExpanded, setPointSheetExpanded] = useState(false);
   const { width, height } = useWindowDimensions();
@@ -636,6 +638,7 @@ export default function HomeScreen() {
 
   function openPointCard(point: DemoPoint & { latitude: number; longitude: number }) {
     setSelectedPoint(point);
+    setShowAllPointReports(false);
     setFiltersOpen(false);
     setFiltersExpanded(false);
   }
@@ -1162,13 +1165,38 @@ export default function HomeScreen() {
               {pointReports.filter((report) => report.pointId === selectedPoint.id).length > 0 && (
                 <View style={styles.reportHistory}>
                   <Text style={styles.reportHistoryTitle}>Segnalazioni della community</Text>
-                  {pointReports.filter((report) => report.pointId === selectedPoint.id).map((report, index) => (
-                    <View key={`${report.createdAt}-${index}`} style={styles.reportHistoryItem}>
-                      <Text style={styles.reportHistoryType}>{report.type}</Text>
-                      {report.details ? <Text style={styles.reportHistoryDetails}>{report.details}</Text> : null}
-                      <Text style={styles.reportHistoryDate}>{new Date(report.createdAt).toLocaleString('it-IT')}</Text>
-                    </View>
-                  ))}
+                  {pointReports
+                    .filter((report) => report.pointId === selectedPoint.id)
+                    .sort((a, b) => b.createdAt - a.createdAt)
+                    .slice(0, showAllPointReports ? undefined : 3)
+                    .map((report, index) => {
+                      const referenceDate = report.lastConfirmedAt ?? report.createdAt;
+                      const ageInDays = (Date.now() - referenceDate) / (1000 * 60 * 60 * 24);
+                      const freshnessLabel = ageInDays >= 40
+                        ? 'Segnalazione non recente'
+                        : ageInDays >= 20
+                          ? 'Da riconfermare'
+                          : 'Segnalazione recente';
+                      return (
+                        <View key={`${report.createdAt}-${index}`} style={styles.reportHistoryItem}>
+                          <Text style={styles.reportHistoryType}>{report.type}</Text>
+                          <Text style={styles.reportFreshness}>{freshnessLabel}</Text>
+                          {report.details ? <Text style={styles.reportHistoryDetails}>{report.details}</Text> : null}
+                          <Text style={styles.reportHistoryDate}>{new Date(report.createdAt).toLocaleString('it-IT')}</Text>
+                        </View>
+                      );
+                    })}
+                  {pointReports.filter((report) => report.pointId === selectedPoint.id).length > 3 && (
+                    <TouchableOpacity
+                      style={styles.reportHistoryToggle}
+                      onPress={() => setShowAllPointReports((current) => !current)}
+                      activeOpacity={0.75}
+                    >
+                      <Text style={styles.reportHistoryToggleText}>
+                        {showAllPointReports ? 'Mostra meno' : `Mostra tutte le segnalazioni (${pointReports.filter((report) => report.pointId === selectedPoint.id).length})`}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               )}
             </View>
@@ -1225,46 +1253,59 @@ export default function HomeScreen() {
         animationType="fade"
         onRequestClose={() => setReportModalOpen(false)}
       >
-        <View style={styles.reportModalBackdrop}>
-          <View style={styles.reportModalCard}>
-            <Text style={styles.reportModalTitle}>Segnala un problema</Text>
-            <Text style={styles.reportModalSubtitle}>{selectedPoint?.title}</Text>
-            <Text style={styles.reportFieldLabel}>Che cosa hai notato?</Text>
-            {['Non funziona', 'È danneggiato', 'È assente', 'Informazioni errate', 'Altro'].map((type) => (
-              <TouchableOpacity
-                key={type}
-                style={[styles.reportTypeOption, selectedReportType === type && styles.reportTypeOptionSelected]}
-                onPress={() => setSelectedReportType(type)}
-                activeOpacity={0.75}
+        <KeyboardAvoidingView
+          style={styles.reportKeyboardAvoiding}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 12 : 0}
+        >
+          <View style={styles.reportModalBackdrop}>
+            <View style={styles.reportModalCard}>
+              <Text style={styles.reportModalTitle}>Segnala un problema</Text>
+              <Text style={styles.reportModalSubtitle}>{selectedPoint?.title}</Text>
+              <ScrollView
+                style={styles.reportModalScroll}
+                contentContainerStyle={styles.reportModalScrollContent}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator
               >
-                <View style={[styles.reportRadio, selectedReportType === type && styles.reportRadioSelected]}>
-                  {selectedReportType === type ? <View style={styles.reportRadioDot} /> : null}
-                </View>
-                <Text style={[styles.reportTypeText, selectedReportType === type && styles.reportTypeTextSelected]}>{type}</Text>
-              </TouchableOpacity>
-            ))}
-            <Text style={styles.reportFieldLabel}>Aggiungi dettagli (facoltativo)</Text>
-            <TextInput
-              value={reportDetails}
-              onChangeText={setReportDetails}
-              placeholder="Descrivi brevemente quello che hai trovato…"
-              placeholderTextColor="#9AA69D"
-              multiline
-              maxLength={300}
-              textAlignVertical="top"
-              style={styles.reportDetailsInput}
-            />
-            <Text style={styles.reportPrivacyNote}>La segnalazione si aggiunge alla cronologia: il punto non viene eliminato automaticamente.</Text>
-            <View style={styles.reportModalActions}>
-              <TouchableOpacity style={styles.reportCancelButton} onPress={() => setReportModalOpen(false)}>
-                <Text style={styles.reportCancelText}>Annulla</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.reportSubmitButton} onPress={submitPointReport}>
-                <Text style={styles.reportSubmitText}>Invia segnalazione</Text>
-              </TouchableOpacity>
+                <Text style={styles.reportFieldLabel}>Che cosa hai notato?</Text>
+                {['Non funziona', 'È danneggiato', 'È assente', 'Informazioni errate', 'Altro'].map((type) => (
+                  <TouchableOpacity
+                    key={type}
+                    style={[styles.reportTypeOption, selectedReportType === type && styles.reportTypeOptionSelected]}
+                    onPress={() => setSelectedReportType(type)}
+                    activeOpacity={0.75}
+                  >
+                    <View style={[styles.reportRadio, selectedReportType === type && styles.reportRadioSelected]}>
+                      {selectedReportType === type ? <View style={styles.reportRadioDot} /> : null}
+                    </View>
+                    <Text style={[styles.reportTypeText, selectedReportType === type && styles.reportTypeTextSelected]}>{type}</Text>
+                  </TouchableOpacity>
+                ))}
+                <Text style={styles.reportFieldLabel}>Aggiungi dettagli (facoltativo)</Text>
+                <TextInput
+                  value={reportDetails}
+                  onChangeText={setReportDetails}
+                  placeholder="Descrivi brevemente quello che hai trovato…"
+                  placeholderTextColor="#9AA69D"
+                  multiline
+                  maxLength={300}
+                  textAlignVertical="top"
+                  style={styles.reportDetailsInput}
+                />
+                <Text style={styles.reportPrivacyNote}>La segnalazione si aggiunge alla cronologia: il punto non viene eliminato automaticamente.</Text>
+              </ScrollView>
+              <View style={styles.reportModalActions}>
+                <TouchableOpacity style={styles.reportCancelButton} onPress={() => setReportModalOpen(false)}>
+                  <Text style={styles.reportCancelText}>Annulla</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.reportSubmitButton} onPress={submitPointReport}>
+                  <Text style={styles.reportSubmitText}>Invia segnalazione</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {!selectedPoint && (
@@ -1310,17 +1351,29 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  reportKeyboardAvoiding: {
+    flex: 1,
+  },
   reportModalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(15, 31, 21, 0.48)',
+    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
+    paddingVertical: 12,
   },
   reportModalCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 22,
     padding: 20,
-    maxHeight: '90%',
+    maxHeight: '96%',
+    width: '100%',
+  },
+  reportModalScroll: {
+    flexShrink: 1,
+  },
+  reportModalScrollContent: {
+    paddingBottom: 8,
   },
   reportModalTitle: {
     color: '#204B3A',
@@ -1446,6 +1499,24 @@ const styles = StyleSheet.create({
     borderTopColor: '#E8EEE8',
     paddingTop: 7,
     marginTop: 5,
+  },
+  reportFreshness: {
+    color: '#789080',
+    fontSize: 10,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  reportHistoryToggle: {
+    alignItems: 'center',
+    paddingTop: 10,
+    marginTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E8EEE8',
+  },
+  reportHistoryToggleText: {
+    color: '#315641',
+    fontSize: 11,
+    fontWeight: '800',
   },
   reportHistoryType: {
     color: '#315641',
