@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Animated,
+  Linking,
   Modal,
   KeyboardAvoidingView,
   TextInput,
@@ -664,6 +665,27 @@ export default function HomeScreen() {
     Alert.alert(feature, 'Questa funzione la realizziamo nel prossimo passaggio.');
   }
 
+  async function openPointDirections() {
+    if (!selectedPoint) return;
+
+    const { latitude, longitude } = selectedPoint;
+    const destination = `${latitude},${longitude}`;
+    const nativeMapUrl = Platform.OS === 'ios'
+      ? `maps://?daddr=${destination}&dirflg=d`
+      : `google.navigation:q=${destination}`;
+    const webFallbackUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+
+    try {
+      await Linking.openURL(nativeMapUrl);
+    } catch {
+      try {
+        await Linking.openURL(webFallbackUrl);
+      } catch {
+        Alert.alert('Navigazione non disponibile', 'Non è stato possibile aprire un’app di navigazione su questo dispositivo.');
+      }
+    }
+  }
+
   function submitPointReport() {
     if (!selectedPoint) return;
     setPointReports((current) => [
@@ -1135,7 +1157,7 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointQuickActions}>
-              <TouchableWithoutFeedback onPress={() => showComingSoon('Indicazioni')}>
+              <TouchableWithoutFeedback onPress={openPointDirections}>
                 <View collapsable={false} style={styles.pointQuickAction}>
                 <Text style={styles.pointQuickActionIcon}>➤</Text>
                 <Text style={styles.pointQuickActionLabel}>Indicazioni</Text>
