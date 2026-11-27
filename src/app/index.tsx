@@ -94,7 +94,7 @@ const CATEGORIES = [
     icon: '🚲',
     subcategories: [
       { id: 'parcheggi-gratuiti', label: 'Parcheggi gratuiti' },
-      { id: 'parcheggi-pagamento', label: 'Parcheggi a pagamento' }
+      { id: 'parcheggi-pagamento', label: 'Parcheggi a pagamento' },
       { id: 'biciclette', label: 'Biciclette' },
     ],
   },
