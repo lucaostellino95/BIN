@@ -432,6 +432,7 @@ export default function HomeScreen() {
   const [reportDetails, setReportDetails] = useState('');
   const [pointReports, setPointReports] = useState<Array<{ pointId: string; type: string; details: string; createdAt: number; lastConfirmedAt?: number }>>([]);
   const [showAllPointReports, setShowAllPointReports] = useState(false);
+  const [updatesModalOpen, setUpdatesModalOpen] = useState(false);
   const markerPressRef = useRef(false);
   const [pointSheetExpanded, setPointSheetExpanded] = useState(false);
   const { width, height } = useWindowDimensions();
@@ -1192,47 +1193,10 @@ export default function HomeScreen() {
                 <View style={styles.demoDot} />
                 <Text style={styles.demoNotice}>Punto dimostrativo · posizione e informazioni non reali</Text>
               </View>
-              {pointReports.filter((report) => report.pointId === selectedPoint.id).length > 0 && (
-                <View style={styles.reportHistory}>
-                  <Text style={styles.reportHistoryTitle}>Segnalazioni della community</Text>
-                  {pointReports
-                    .filter((report) => report.pointId === selectedPoint.id)
-                    .sort((a, b) => b.createdAt - a.createdAt)
-                    .slice(0, showAllPointReports ? undefined : 3)
-                    .map((report, index) => {
-                      const referenceDate = report.lastConfirmedAt ?? report.createdAt;
-                      const ageInDays = (Date.now() - referenceDate) / (1000 * 60 * 60 * 24);
-                      const freshnessLabel = ageInDays >= 40
-                        ? 'Segnalazione non recente'
-                        : ageInDays >= 20
-                          ? 'Da riconfermare'
-                          : 'Segnalazione recente';
-                      return (
-                        <View key={`${report.createdAt}-${index}`} style={styles.reportHistoryItem}>
-                          <Text style={styles.reportHistoryType}>{report.type}</Text>
-                          <Text style={styles.reportFreshness}>{freshnessLabel}</Text>
-                          {report.details ? <Text style={styles.reportHistoryDetails}>{report.details}</Text> : null}
-                          <Text style={styles.reportHistoryDate}>{new Date(report.createdAt).toLocaleString('it-IT')}</Text>
-                        </View>
-                      );
-                    })}
-                  {pointReports.filter((report) => report.pointId === selectedPoint.id).length > 3 && (
-                    <TouchableOpacity
-                      style={styles.reportHistoryToggle}
-                      onPress={() => setShowAllPointReports((current) => !current)}
-                      activeOpacity={0.75}
-                    >
-                      <Text style={styles.reportHistoryToggleText}>
-                        {showAllPointReports ? 'Mostra meno' : `Mostra tutte le segnalazioni (${pointReports.filter((report) => report.pointId === selectedPoint.id).length})`}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              )}
             </View>
 
             <View style={styles.pointFeatureGrid}>
-              <TouchableWithoutFeedback onPress={() => showComingSoon('Aggiornamenti')}>
+              <TouchableWithoutFeedback onPress={() => setUpdatesModalOpen(true)}>
                 <View collapsable={false} style={styles.pointFeatureItem}>
                 <Text style={styles.pointFeatureIcon}>↻</Text>
                 <View style={styles.pointFeatureCopy}>
@@ -1256,6 +1220,58 @@ export default function HomeScreen() {
           </ScrollView>
         </Animated.View>
       )}
+
+      <Modal
+        visible={updatesModalOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setUpdatesModalOpen(false)}
+      >
+        <View style={styles.reportModalBackdrop}>
+          <View style={styles.reportModalCard}>
+            <Text style={styles.reportModalTitle}>Aggiornamenti</Text>
+            <Text style={styles.reportModalSubtitle}>{selectedPoint?.title}</Text>
+            <ScrollView style={styles.reportModalScroll} contentContainerStyle={styles.reportModalScrollContent}>
+              <Text style={styles.reportPrivacyNote}>
+                Cronologia delle attività registrate per questo punto. Le segnalazioni degli utenti non significano automaticamente che sia stato effettuato un intervento.
+              </Text>
+              {pointReports.filter((report) => report.pointId === selectedPoint?.id).length === 0 ? (
+                <Text style={[styles.pointCardDescription, { marginTop: 16 }]}>
+                  Non ci sono ancora aggiornamenti per questo punto.
+                </Text>
+              ) : (
+                <View style={styles.reportHistory}>
+                  <Text style={styles.reportHistoryTitle}>Segnalazioni della community</Text>
+                  {pointReports
+                    .filter((report) => report.pointId === selectedPoint?.id)
+                    .sort((a, b) => b.createdAt - a.createdAt)
+                    .map((report, index) => {
+                      const ageInDays = (Date.now() - report.createdAt) / (1000 * 60 * 60 * 24);
+                      const freshnessLabel = ageInDays >= 40
+                        ? 'Segnalazione non recente'
+                        : ageInDays >= 20
+                          ? 'Da riconfermare'
+                          : 'Segnalazione recente';
+                      return (
+                        <View key={`${report.createdAt}-${index}`} style={styles.reportHistoryItem}>
+                          <Text style={styles.reportHistoryType}>{report.type}</Text>
+                          <Text style={styles.reportFreshness}>{freshnessLabel}</Text>
+                          {report.details ? <Text style={styles.reportHistoryDetails}>{report.details}</Text> : null}
+                          <Text style={styles.reportHistoryDate}>{new Date(report.createdAt).toLocaleString('it-IT')}</Text>
+                        </View>
+                      );
+                    })}
+                </View>
+              )}
+            </ScrollView>
+            <View style={styles.reportModalActions}>
+              <TouchableOpacity style={styles.reportCancelButton} onPress={() => setUpdatesModalOpen(false)}>
+                <Text style={styles.reportCancelText}>Chiudi</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <Modal
         visible={reportModalOpen}
