@@ -388,7 +388,21 @@ function CategoryFilterIcon({ categoryId }: { categoryId: string }) {
       ]}
     >
       <Svg width={20} height={20} viewBox="0 0 24 24">
-        {isAccessibility ? (
+        {categoryId === 'mobilita' ? (
+          <G>
+            {/* Auto frontale stilizzata, piena e leggibile anche in piccolo. */}
+            <Path
+              d="M5 10 L7 5.8 Q7.7 4.5 9.2 4.5 H14.8 Q16.3 4.5 17 5.8 L19 10 L21 12.2 V18.5 H17.8 V16.8 H6.2 V18.5 H3 V12.2 Z"
+              fill="#FFFFFF"
+            />
+            <Path
+              d="M8.2 6.5 H15.8 L17.2 9.7 H6.8 Z"
+              fill="#536D9D"
+            />
+            <Path d="M5.2 12.3 H7.3 V14.1 H5.2 Z M16.7 12.3 H18.8 V14.1 H16.7 Z" fill="#536D9D" />
+            <Path d="M9 13 H15 V14.2 H9 Z" fill="#536D9D" />
+          </G>
+        ) : isAccessibility ? (
           <G transform="translate(1.4 -0.2) scale(0.94)">
             {/* Stesso pittogramma della sedia a rotelle usato nel pin Accessibilità. */}
             <Circle cx={7.2} cy={3.1} r={2.1} fill="#FFFFFF" />
