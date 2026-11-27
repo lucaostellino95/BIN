@@ -6,7 +6,8 @@ import {
   PanResponder,
   StyleSheet,
   View,
-  Text,
+  Text as NativeText,
+  type TextProps,
   TouchableOpacity,
   TouchableWithoutFeedback,
   ActivityIndicator,
@@ -16,6 +17,23 @@ import {
 import MapView, { Marker, UrlTile } from 'react-native-maps';
 import Svg, { Circle, Defs, G, LinearGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
 import * as Location from 'expo-location';
+
+
+// Tipografia BIN: caratteri di sistema nativi, familiari e leggibili su entrambe le piattaforme.
+const BIN_FONT_FAMILY = Platform.select({
+  ios: 'System',
+  android: 'Roboto',
+  default: 'sans-serif',
+});
+
+function Text({ style, ...props }: TextProps) {
+  return (
+    <NativeText
+      {...props}
+      style={[{ fontFamily: BIN_FONT_FAMILY }, style]}
+    />
+  );
+}
 
 const CATEGORIES = [
   {
