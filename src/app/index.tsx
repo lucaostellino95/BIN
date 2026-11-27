@@ -294,8 +294,8 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
               />
             </G>
           ) : subcategoryId === 'rampe' ? (
-            <>
-              {/* Pittogramma accessibilità ispirato al riferimento fornito: figura, seduta e ruota ben leggibili. */}
+            <G transform="translate(0.6 0.6) scale(0.94)">
+              {/* Pittogramma accessibilità: braccio accorciato e figura riequilibrata nel pin. */}
               <Circle cx={7.2} cy={3.1} r={2.1} fill="#FFFFFF" />
               <Path
                 d="M7.1 6.1 L8.3 12.4 Q8.5 13.5 9.7 13.5 H14.6 L17.2 19.7 Q17.6 20.7 18.7 20.7 H21"
@@ -306,7 +306,7 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
                 strokeLinejoin="round"
               />
               <Path
-                d="M7.6 7.3 L17.7 7.1"
+                d="M7.6 7.3 L15.8 7.1"
                 fill="none"
                 stroke="#FFFFFF"
                 strokeWidth={2.4}
@@ -319,7 +319,7 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
                 strokeWidth={2.5}
                 strokeLinecap="round"
               />
-            </>
+            </G>
           ) : (
             <Path
               d={iconPath}
