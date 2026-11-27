@@ -1170,14 +1170,6 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.pointPhotoPlaceholder}>
-              <View style={styles.pointPhotoIconWrap}>
-                <Text style={styles.pointPhotoIcon}>▧</Text>
-              </View>
-              <Text style={styles.pointPhotoTitle}>Nessuna foto disponibile</Text>
-              <Text style={styles.pointPhotoSubtitle}>Le foto condivise dalla community appariranno qui</Text>
-            </View>
-
             <View style={styles.pointQuickActions}>
               <TouchableWithoutFeedback onPress={openPointDirections}>
                 <View collapsable={false} style={styles.pointQuickAction}>
@@ -1189,12 +1181,6 @@ export default function HomeScreen() {
                 <View collapsable={false} style={styles.pointQuickAction}>
                 <Text style={styles.pointQuickActionIcon}>⚑</Text>
                 <Text style={styles.pointQuickActionLabel}>Segnala</Text>
-              </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={() => showComingSoon('Aggiungi una foto')}>
-                <View collapsable={false} style={styles.pointQuickAction}>
-                <Text style={styles.pointQuickActionIcon}>＋</Text>
-                <Text style={styles.pointQuickActionLabel}>Foto</Text>
               </View>
               </TouchableWithoutFeedback>
             </View>
@@ -1252,16 +1238,6 @@ export default function HomeScreen() {
                 <View style={styles.pointFeatureCopy}>
                   <Text style={styles.pointFeatureTitle}>Recensioni</Text>
                   <Text style={styles.pointFeatureSubtitle}>Esperienze e valutazioni</Text>
-                </View>
-                <Text style={styles.pointFeatureChevron}>›</Text>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={() => showComingSoon('Foto')}>
-                <View collapsable={false} style={styles.pointFeatureItem}>
-                <Text style={styles.pointFeatureIcon}>▧</Text>
-                <View style={styles.pointFeatureCopy}>
-                  <Text style={styles.pointFeatureTitle}>Foto</Text>
-                  <Text style={styles.pointFeatureSubtitle}>Immagini condivise dagli utenti</Text>
                 </View>
                 <Text style={styles.pointFeatureChevron}>›</Text>
                 </View>
@@ -1745,40 +1721,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     marginTop: 3,
-  },
-  pointPhotoPlaceholder: {
-    height: 112,
-    borderRadius: 16,
-    backgroundColor: '#F1F5F1',
-    borderWidth: 1,
-    borderColor: '#E6ECE6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 13,
-    gap: 4,
-  },
-  pointPhotoIconWrap: {
-    width: 34,
-    height: 34,
-    borderRadius: 12,
-    backgroundColor: '#E3EBE4',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 2,
-  },
-  pointPhotoIcon: {
-    color: '#64806B',
-    fontSize: 21,
-  },
-  pointPhotoTitle: {
-    color: '#315641',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  pointPhotoSubtitle: {
-    color: '#8A9B8E',
-    fontSize: 10,
-    textAlign: 'center',
   },
   pointQuickActions: {
     flexDirection: 'row',
