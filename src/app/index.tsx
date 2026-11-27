@@ -646,6 +646,7 @@ export default function HomeScreen() {
   }
 
   function handleMapTap() {
+    if (selectingDuplicateOnMap) return;
     if (markerPressRef.current) {
       markerPressRef.current = false;
       return;
