@@ -1204,11 +1204,11 @@ export default function HomeScreen() {
                 <View style={styles.demoDot} />
                 <Text style={styles.demoNotice}>Punto dimostrativo · posizione e informazioni non reali</Text>
               </View>
-              {pointReports.filter((report) => report.pointId === selectedPoint.id).length > 0 && (
+              {pointReports.filter((report) => report.pointId === selectedPoint.id || report.relatedPointId === selectedPoint.id).length > 0 && (
                 <View style={styles.reportHistory}>
                   <Text style={styles.reportHistoryTitle}>Ultime segnalazioni</Text>
                   {pointReports
-                    .filter((report) => report.pointId === selectedPoint.id)
+                    .filter((report) => report.pointId === selectedPoint.id || report.relatedPointId === selectedPoint.id)
                     .sort((a, b) => b.createdAt - a.createdAt)
                     .slice(0, 3)
                     .map((report, index) => {
@@ -1271,7 +1271,7 @@ export default function HomeScreen() {
               <Text style={styles.reportPrivacyNote}>
                 Cronologia delle attività registrate per questo punto. Le segnalazioni degli utenti non significano automaticamente che sia stato effettuato un intervento.
               </Text>
-              {pointReports.filter((report) => report.pointId === selectedPoint?.id).length === 0 ? (
+              {pointReports.filter((report) => report.pointId === selectedPoint?.id || report.relatedPointId === selectedPoint?.id).length === 0 ? (
                 <Text style={[styles.pointCardDescription, { marginTop: 16 }]}>
                   Non ci sono ancora aggiornamenti per questo punto.
                 </Text>
@@ -1279,7 +1279,7 @@ export default function HomeScreen() {
                 <View style={styles.reportHistory}>
                   <Text style={styles.reportHistoryTitle}>Segnalazioni della community</Text>
                   {pointReports
-                    .filter((report) => report.pointId === selectedPoint?.id)
+                    .filter((report) => report.pointId === selectedPoint?.id || report.relatedPointId === selectedPoint?.id)
                     .sort((a, b) => b.createdAt - a.createdAt)
                     .map((report, index) => {
                       const ageInDays = (Date.now() - report.createdAt) / (1000 * 60 * 60 * 24);
