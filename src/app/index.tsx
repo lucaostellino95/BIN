@@ -294,7 +294,7 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
               />
             </G>
           ) : subcategoryId === 'rampe' ? (
-            <G transform="translate(0.6 0.6) scale(0.94)">
+            <G transform="translate(1.4 -0.2) scale(0.94)">
               {/* Pittogramma accessibilità: braccio accorciato e figura riequilibrata nel pin. */}
               <Circle cx={7.2} cy={3.1} r={2.1} fill="#FFFFFF" />
               <Path
