@@ -1180,7 +1180,7 @@ export default function HomeScreen() {
               <TouchableWithoutFeedback onPress={() => setReportModalOpen(true)}>
                 <View collapsable={false} style={styles.pointQuickAction}>
                 <Text style={styles.pointQuickActionIcon}>⚑</Text>
-                <Text style={styles.pointQuickActionLabel}>Segnala</Text>
+                <Text style={styles.pointQuickActionLabel}>Contribuisci</Text>
               </View>
               </TouchableWithoutFeedback>
             </View>
