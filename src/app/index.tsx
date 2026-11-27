@@ -152,7 +152,7 @@ const PIN_COLORS: Record<string, string> = {
   cestini: '#777F88',
   'bagni-pubblici': '#1769AA',
   'distributori-sacchetti': '#777F88',
-  rampe: '',
+  rampe: '#815DB5',
   ascensori: '#815DB5',
   'percorsi-accessibili': '#815DB5',
   'parcheggi-riservati': '#815DB5',
@@ -295,21 +295,28 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
             </G>
           ) : subcategoryId === 'rampe' ? (
             <>
-              {/* International Symbol of Access (ISA), 1968 — ISO 7001 */}
-              <Circle cx={9.1} cy={2.7} r={1.9} fill="#FFFFFF" />
+              {/* Pittogramma accessibilità ispirato al riferimento fornito: figura, seduta e ruota ben leggibili. */}
+              <Circle cx={7.2} cy={3.1} r={2.1} fill="#FFFFFF" />
               <Path
-                d="M8.2 5 L8.8 12.5 L15.5 12.5 L19.5 20.2 L21.8 19.2 M8.6 8.4 H14.6"
+                d="M7.1 6.1 L8.3 12.4 Q8.5 13.5 9.7 13.5 H14.6 L17.2 19.7 Q17.6 20.7 18.7 20.7 H21"
                 fill="none"
                 stroke="#FFFFFF"
-                strokeWidth={2.35}
-                strokeLinecap="square"
-                strokeLinejoin="miter"
+                strokeWidth={2.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <Path
-                d="M4.8 11.1 A5.5 5.5 0 1 0 14 13.6"
+                d="M7.6 7.3 L17.7 7.1"
                 fill="none"
                 stroke="#FFFFFF"
-                strokeWidth={2.2}
+                strokeWidth={2.4}
+                strokeLinecap="round"
+              />
+              <Path
+                d="M6.6 9.3 A7.2 7.2 0 1 0 15.3 16.8"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth={2.5}
                 strokeLinecap="round"
               />
             </>
@@ -672,6 +679,7 @@ export default function HomeScreen() {
         <MapView
           ref={setMapRef}
           style={styles.map}
+          mapType={Platform.OS === 'android' ? 'none' : 'standard'}
           initialRegion={{
             latitude: position.latitude,
             longitude: position.longitude,
@@ -689,6 +697,7 @@ export default function HomeScreen() {
             urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
             maximumZ={19}
             tileSize={256}
+            shouldReplaceMapContent={Platform.OS === 'ios'}
           />
           {visibleDemoPoints.map((point) => (
             <Marker
