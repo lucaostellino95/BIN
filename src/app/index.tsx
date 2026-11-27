@@ -691,7 +691,7 @@ export default function HomeScreen() {
 
     if (Platform.OS === 'ios') {
       Alert.alert('Come vuoi arrivare?', 'Scegli l’app di navigazione.', [
-        { text: 'Apple Mappe', onPress: () => { void openNavigationApp('apple', destination); } },
+        { text: 'Mappe', onPress: () => { void openNavigationApp('apple', destination); } },
         { text: 'Google Maps', onPress: () => { void openNavigationApp('google', destination); } },
         { text: 'Annulla', style: 'cancel' },
       ]);
