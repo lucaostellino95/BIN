@@ -201,6 +201,7 @@ const PIN_ICON_PATHS: Record<string, string> = {
   tavoli: 'M3 10 H21 V13 H3 Z M6 13 V21 M18 13 V21 M12 13 V21',
   'aree-cani': 'M5 8 A2 2 0 1 0 5 4 A2 2 0 0 0 5 8 M12 6 A2 2 0 1 0 12 2 A2 2 0 0 0 12 6 M19 8 A2 2 0 1 0 19 4 A2 2 0 0 0 19 8 M12 12 C8 8 4 12 6 17 C8 22 10 19 12 19 C14 19 16 22 18 17 C20 12 16 8 12 12 Z',
   'fontanelle-animali': 'M12 2 C10 6 5 11 5 15 A7 7 0 0 0 19 15 C19 11 14 6 12 2 Z M4 21 H20 M7 18 L5 21 M17 18 L19 21',
+  'distributori-sacchetti': 'M7 8 V6 A5 5 0 0 1 17 6 V8 M5 8 H19 L18 21 H6 Z M9 12 V17 M15 12 V17',
   'parcheggi-gratuiti': 'M7 21 V3 H14 A6 6 0 0 1 14 15 H7',
   'parcheggi-pagamento': 'M7 21 V3 H14 A6 6 0 0 1 14 15 H7',
   parchi: 'M12 3 L5 13 H9 L5 19 H19 L15 13 H19 Z M12 19 V22',
