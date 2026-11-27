@@ -366,15 +366,32 @@ function CategoryFilterIcon({ categoryId }: { categoryId: string }) {
     verde: 'M12 3 L5 13 H9 L5 19 H19 L15 13 H19 Z M12 19 V22',
     emergenza: 'M12 3 L20 6 V12 C20 17 16 20 12 22 C8 20 4 17 4 12 V6 Z M12 8 V16 M8 12 H16',
   };
+  const categoryColors: Record<string, string> = {
+    acqua: '#249BD1',
+    servizi: '#777F88',
+    accessibilita: '#815DB5',
+    comfort: '#D99A36',
+    animali: '#D47791',
+    attivita: '#287C83',
+    mobilita: '#536D9D',
+    verde: '#32865A',
+    emergenza: '#D45C4D',
+  };
   const isWater = categoryId === 'acqua';
 
   return (
-    <View style={[styles.categoryIcon, isWater && styles.categoryIconTile]}>
+    <View
+      style={[
+        styles.categoryIcon,
+        styles.categoryIconTile,
+        { backgroundColor: categoryColors[categoryId] ?? '#32865A' },
+      ]}
+    >
       <Svg width={isWater ? 18 : 20} height={isWater ? 18 : 20} viewBox="0 0 24 24">
         <Path
           d={paths[categoryId] ?? paths.acqua}
           fill={isWater ? '#FFFFFF' : 'none'}
-          stroke={isWater ? 'none' : '#47745A'}
+          stroke={isWater ? 'none' : '#FFFFFF'}
           strokeWidth={1.8}
           strokeLinecap="round"
           strokeLinejoin="round"
