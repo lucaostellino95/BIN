@@ -429,8 +429,9 @@ export default function HomeScreen() {
   const [selectedPoint, setSelectedPoint] = useState<(DemoPoint & { latitude: number; longitude: number }) | null>(null);
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [selectedReportType, setSelectedReportType] = useState('Non funziona');
+  const [selectedDuplicatePointId, setSelectedDuplicatePointId] = useState<string | null>(null);
   const [reportDetails, setReportDetails] = useState('');
-  const [pointReports, setPointReports] = useState<Array<{ pointId: string; type: string; details: string; createdAt: number; lastConfirmedAt?: number }>>([]);
+  const [pointReports, setPointReports] = useState<Array<{ pointId: string; type: string; details: string; createdAt: number; lastConfirmedAt?: number; relatedPointId?: string }>>([]);
   const [updatesModalOpen, setUpdatesModalOpen] = useState(false);
   const markerPressRef = useRef(false);
   const [pointSheetExpanded, setPointSheetExpanded] = useState(false);
@@ -709,14 +710,26 @@ export default function HomeScreen() {
 
   function submitPointReport() {
     if (!selectedPoint) return;
+    if (selectedReportType === 'È un duplicato?' && !selectedDuplicatePointId) {
+      Alert.alert('Seleziona il punto', 'Indica quale altro BIN ritieni duplicato.');
+      return;
+    }
+    const relatedPoint = demoPoints.find((point) => point.id === selectedDuplicatePointId);
+    const details = [
+      reportDetails.trim(),
+      selectedReportType === 'È un duplicato?' && relatedPoint ? `Indicato come duplicato di: ${relatedPoint.title}` : '',
+    ].filter(Boolean).join(' · ');
     setPointReports((current) => [
-      { pointId: selectedPoint.id, type: selectedReportType, details: reportDetails.trim(), createdAt: Date.now() },
+      { pointId: selectedPoint.id, type: selectedReportType, details, createdAt: Date.now(), ...(selectedReportType === 'È un duplicato?' && selectedDuplicatePointId ? { relatedPointId: selectedDuplicatePointId } : {}) },
       ...current,
     ]);
     setReportModalOpen(false);
     setSelectedReportType('Non funziona');
+    setSelectedDuplicatePointId(null);
     setReportDetails('');
-    Alert.alert('Segnalazione registrata', 'Grazie! La segnalazione è stata aggiunta alla scheda di questo punto. Non comporta la rimozione automatica del punto.');
+    Alert.alert('Segnalazione registrata', selectedReportType === 'È un duplicato?'
+      ? 'Grazie! Abbiamo collegato i due punti per una verifica. Nessuno dei due viene eliminato automaticamente.'
+      : 'Grazie! La segnalazione è stata aggiunta alla scheda di questo punto. Non comporta la rimozione automatica del punto.');
   }
 
   function toggleCategory(categoryId: string) {
@@ -1176,7 +1189,7 @@ export default function HomeScreen() {
                 <Text style={styles.pointQuickActionLabel}>Indicazioni</Text>
               </View>
               </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={() => setReportModalOpen(true)}>
+              <TouchableWithoutFeedback onPress={() => { setSelectedDuplicatePointId(null); setReportModalOpen(true); }}>
                 <View collapsable={false} style={styles.pointQuickAction}>
                 <Text style={styles.pointQuickActionIcon}>⚑</Text>
                 <Text style={styles.pointQuickActionLabel}>Contribuisci</Text>
@@ -1318,7 +1331,7 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator
               >
                 <Text style={styles.reportFieldLabel}>Che cosa hai notato?</Text>
-                {['Non funziona', 'È danneggiato', 'È assente', 'Informazioni errate', 'Altro'].map((type) => (
+                {['Non funziona', 'È danneggiato', 'È assente', 'Informazioni errate', 'È un duplicato?', 'Altro'].map((type) => (
                   <TouchableOpacity
                     key={type}
                     style={[styles.reportTypeOption, selectedReportType === type && styles.reportTypeOptionSelected]}
@@ -1331,6 +1344,33 @@ export default function HomeScreen() {
                     <Text style={[styles.reportTypeText, selectedReportType === type && styles.reportTypeTextSelected]}>{type}</Text>
                   </TouchableOpacity>
                 ))}
+                {selectedReportType === 'È un duplicato?' && (
+                  <View>
+                    <Text style={styles.reportFieldLabel}>Quale altro BIN è un duplicato?</Text>
+                    {demoPoints.filter((point) => point.id !== selectedPoint?.id).map((point) => {
+                      const isSelected = selectedDuplicatePointId === point.id;
+                      const distance = selectedPoint
+                        ? Math.round(distanceBetweenMeters(selectedPoint.latitude, selectedPoint.longitude, point.latitude, point.longitude))
+                        : null;
+                      return (
+                        <TouchableOpacity
+                          key={point.id}
+                          style={[styles.reportTypeOption, isSelected && styles.reportTypeOptionSelected]}
+                          onPress={() => setSelectedDuplicatePointId(point.id)}
+                          activeOpacity={0.75}
+                        >
+                          <View style={[styles.reportRadio, isSelected && styles.reportRadioSelected]}>
+                            {isSelected ? <View style={styles.reportRadioDot} /> : null}
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Text style={[styles.reportTypeText, isSelected && styles.reportTypeTextSelected]}>{point.title}</Text>
+                            <Text style={styles.reportPrivacyNote}>{point.subcategoryId} · {distance !== null ? `${distance} m` : ''}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                )}
                 <Text style={styles.reportFieldLabel}>Aggiungi dettagli (facoltativo)</Text>
                 <TextInput
                   value={reportDetails}
