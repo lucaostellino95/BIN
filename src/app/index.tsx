@@ -93,7 +93,8 @@ const CATEGORIES = [
     label: 'Mobilità',
     icon: '🚲',
     subcategories: [
-      { id: 'parcheggi', label: 'Parcheggi' },
+      { id: 'parcheggi-gratuiti', label: 'Parcheggi gratuiti' },
+      { id: 'parcheggi-pagamento', label: 'Parcheggi a pagamento' }
       { id: 'biciclette', label: 'Biciclette' },
     ],
   },
@@ -143,7 +144,8 @@ const DEMO_POINTS: DemoPoint[] = [
   { id: 'demo-3', title: 'Panchina di prova', subcategoryId: 'panchine', icon: '▰', description: 'Punto dimostrativo: panchina.', latitudeOffset: 0.0004, longitudeOffset: -0.0015 },
   { id: 'demo-4', title: 'Bagno pubblico di prova', subcategoryId: 'bagni-pubblici', icon: 'WC', description: 'Punto dimostrativo: bagno pubblico.', latitudeOffset: -0.0018, longitudeOffset: -0.0005 },
   { id: 'demo-5', title: 'Area cani di prova', subcategoryId: 'aree-cani', icon: '♧', description: 'Punto dimostrativo: area dedicata ai cani.', latitudeOffset: 0.0020, longitudeOffset: 0.0018 },
-  { id: 'demo-6', title: 'Parcheggio di prova', subcategoryId: 'parcheggi', icon: 'P', description: 'Punto dimostrativo: parcheggio.', latitudeOffset: -0.0022, longitudeOffset: 0.0016 },
+  { id: 'demo-6', title: 'Parcheggio gratuito di prova', subcategoryId: 'parcheggi-gratuiti', icon: 'P', description: 'Punto dimostrativo: parcheggio gratuito.', latitudeOffset: -0.0022, longitudeOffset: 0.0016 },
+  { id: 'demo-10', title: 'Parcheggio a pagamento di prova', subcategoryId: 'parcheggi-pagamento', icon: 'P', description: 'Punto dimostrativo: parcheggio a pagamento.', latitudeOffset: -0.0030, longitudeOffset: 0.0023 }, 
   { id: 'demo-7', title: 'Parco di prova', subcategoryId: 'parchi', icon: '♣', description: 'Punto dimostrativo: area verde.', latitudeOffset: 0.0025, longitudeOffset: -0.0017 },
   { id: 'demo-8', title: 'DAE di prova', subcategoryId: 'dae', icon: 'AED', description: 'Punto dimostrativo: defibrillatore.', latitudeOffset: -0.0027, longitudeOffset: -0.0018 },
   { id: 'demo-9', title: 'Rampa accessibile di prova', subcategoryId: 'rampe', icon: '♿', description: 'Punto dimostrativo: rampa per l’accessibilità.', latitudeOffset: 0.0002, longitudeOffset: 0.0028 },
@@ -167,7 +169,8 @@ const PIN_COLORS: Record<string, string> = {
   'aree-cani': '#D47791',
   'fontanelle-animali': '#D47791',
   'pet-friendly': '#D47791',
-  parcheggi: '#536D9D',
+  'parcheggi-gratuiti': '#536D9D',
+  'parcheggi-pagamento': '#536D9D',
   biciclette: '#536D9D',
   parchi: '#32865A',
   giochi: '#32865A',
@@ -197,7 +200,8 @@ const PIN_DARK_COLORS: Record<string, string> = {
   'aree-cani': '#A94E69',
   'fontanelle-animali': '#A94E69',
   'pet-friendly': '#A94E69',
-  parcheggi: '#3A5078',
+  'parcheggi-gratuiti': '#3A5078',
+  'parcheggi-pagamento': '#3A5078',
   biciclette: '#3A5078',
   parchi: '#205C3B',
   giochi: '#205C3B',
@@ -227,7 +231,8 @@ const PIN_ICON_PATHS: Record<string, string> = {
   'aree-cani': 'M5 8 A2 2 0 1 0 5 4 A2 2 0 0 0 5 8 M12 6 A2 2 0 1 0 12 2 A2 2 0 0 0 12 6 M19 8 A2 2 0 1 0 19 4 A2 2 0 0 0 19 8 M12 12 C8 8 4 12 6 17 C8 22 10 19 12 19 C14 19 16 22 18 17 C20 12 16 8 12 12 Z',
   'fontanelle-animali': 'M12 2 C10 6 5 11 5 15 A7 7 0 0 0 19 15 C19 11 14 6 12 2 Z M4 21 H20 M7 18 L5 21 M17 18 L19 21',
   'pet-friendly': 'M5 8 A2 2 0 1 0 5 4 A2 2 0 0 0 5 8 M12 6 A2 2 0 1 0 12 2 A2 2 0 0 0 12 6 M19 8 A2 2 0 1 0 19 4 A2 2 0 0 0 19 8 M12 12 C8 8 4 12 6 17 C8 22 10 19 12 19 C14 19 16 22 18 17 C20 12 16 8 12 12 Z',
-  parcheggi: 'M7 21 V3 H14 A6 6 0 0 1 14 15 H7',
+  'parcheggi-gratuiti': 'M7 21 V3 H14 A6 6 0 0 1 14 15 H7',
+  'parcheggi-pagamento': 'M7 21 V3 H14 A6 6 0 0 1 14 15 H7',
   biciclette: 'M5 17 A4 4 0 1 0 5 9 A4 4 0 0 0 5 17 M19 17 A4 4 0 1 0 19 9 A4 4 0 0 0 19 17 M5 13 L10 7 L14 13 H5 L10 13 L14 7 H17',
   parchi: 'M12 3 L5 13 H9 L5 19 H19 L15 13 H19 Z M12 19 V22',
   giochi: 'M4 14 L12 5 L20 14 M6 13 V21 H18 V13 M9 16 H15 V21',
@@ -261,7 +266,7 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
         <G transform="translate(12 12)">
           {subcategoryId === 'bagni-pubblici' ? (
             <SvgText x="12" y="16.5" fill="#FFFFFF" fontSize="10.5" fontWeight="bold" textAnchor="middle" letterSpacing={0.2}>WC</SvgText>
-          ) : subcategoryId === 'parcheggi' ? (
+          ) : (subcategoryId === 'parcheggi-gratuiti' || subcategoryId === 'parcheggi-pagamento') ? (
             <Path d={iconPath} fill="none" stroke="#FFFFFF" strokeWidth={2.8} strokeLinecap="round" strokeLinejoin="round" />
           ) : subcategoryId === 'dae' ? (
             <G>
