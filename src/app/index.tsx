@@ -354,6 +354,34 @@ function MapPin({ subcategoryId }: { subcategoryId: string }) {
   );
 }
 
+function CategoryFilterIcon({ categoryId }: { categoryId: string }) {
+  const paths: Record<string, string> = {
+    acqua: 'M12 2 C10 6 5 11 5 15 A7 7 0 0 0 19 15 C19 11 14 6 12 2 Z',
+    servizi: 'M5 7 H19 M9 7 V4 H15 V7 M7 7 L8 21 H16 L17 7 M10 11 V17 M14 11 V17',
+    accessibilita: 'M9 3 A2 2 0 1 0 9 7 A2 2 0 0 0 9 3 M9 8 L13 10 H18 L20 14 M13 10 L11 15 L15 18 H19 M8 10 L5 15 M15 18 A5 5 0 1 0 23 18',
+    comfort: 'M4 11 H20 V16 H4 Z M6 16 V21 M18 16 V21 M5 7 H19 V11 H5 Z',
+    animali: 'M6 9 A2 2 0 1 0 6 5 A2 2 0 0 0 6 9 M12 7 A2 2 0 1 0 12 3 A2 2 0 0 0 12 7 M18 9 A2 2 0 1 0 18 5 A2 2 0 0 0 18 9 M12 12 C8 9 4 12 6 17 C8 22 10 19 12 19 C14 19 16 22 18 17 C20 12 16 9 12 12 Z',
+    attivita: 'M4 10 H20 V21 H4 Z M3 10 L5 4 H19 L21 10 M3 10 A3 3 0 0 0 9 10 A3 3 0 0 0 15 10 A3 3 0 0 0 21 10 M9 21 V15 H15 V21',
+    mobilita: 'M5 17 A4 4 0 1 0 5 9 A4 4 0 0 0 5 17 M19 17 A4 4 0 1 0 19 9 A4 4 0 0 0 19 17 M5 13 L10 7 L14 13 H5 L10 13 L14 7 H17',
+    verde: 'M12 3 L5 13 H9 L5 19 H19 L15 13 H19 Z M12 19 V22',
+    emergenza: 'M12 3 L20 6 V12 C20 17 16 20 12 22 C8 20 4 17 4 12 V6 Z M12 8 V16 M8 12 H16',
+  };
+  return (
+    <View style={styles.categoryIcon}>
+      <Svg width={20} height={20} viewBox="0 0 24 24">
+        <Path
+          d={paths[categoryId] ?? paths.acqua}
+          fill="none"
+          stroke="#47745A"
+          strokeWidth={1.8}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </Svg>
+    </View>
+  );
+}
+
 function distanceBetweenMeters(latitude1: number, longitude1: number, latitude2: number, longitude2: number) {
   const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
   const earthRadius = 6371000;
@@ -878,7 +906,7 @@ export default function HomeScreen() {
                         accessibilityRole="checkbox"
                         accessibilityState={{ checked: allSelected }}
                       >
-                        <Text style={styles.categoryIcon}>{category.icon}</Text>
+                        <CategoryFilterIcon categoryId={category.id} />
                         <Text
                           style={[
                             styles.categoryLabel,
@@ -1719,7 +1747,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#315641',
   },
   categoryIcon: {
-    fontSize: 19,
+    width: 22,
+    height: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   categoryLabel: {
     flex: 1,
