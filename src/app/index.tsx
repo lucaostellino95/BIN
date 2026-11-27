@@ -430,6 +430,7 @@ export default function HomeScreen() {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [selectedReportType, setSelectedReportType] = useState('Non funziona');
   const [selectedDuplicatePointId, setSelectedDuplicatePointId] = useState<string | null>(null);
+  const [selectingDuplicateOnMap, setSelectingDuplicateOnMap] = useState(false);
   const [reportDetails, setReportDetails] = useState('');
   const [pointReports, setPointReports] = useState<Array<{ pointId: string; type: string; details: string; createdAt: number; lastConfirmedAt?: number; relatedPointId?: string }>>([]);
   const [updatesModalOpen, setUpdatesModalOpen] = useState(false);
@@ -792,6 +793,8 @@ export default function HomeScreen() {
       )
     : [];
 
+  const mapPoints = selectingDuplicateOnMap ? demoPoints : visibleDemoPoints;
+
   const filterPanelHeight = filtersExpanded
     ? Math.min(height * 0.72, 620)
     : Math.min(height * 0.46, 390);
@@ -822,14 +825,24 @@ export default function HomeScreen() {
             tileSize={256}
             shouldReplaceMapContent={Platform.OS === 'ios'}
           />
-          {visibleDemoPoints.map((point) => (
+          {mapPoints.map((point) => (
             <Marker
               key={point.subcategoryId === 'dae' ? `${point.id}-aed-sign-v2` : point.id}
               coordinate={{ latitude: point.latitude, longitude: point.longitude }}
               anchor={{ x: 0.5, y: 1 }}
               onPress={() => {
                 markerPressRef.current = true;
-                openPointCard(point);
+                if (selectingDuplicateOnMap) {
+                  if (point.id === selectedPoint?.id) {
+                    Alert.alert('Seleziona un altro BIN', 'Il punto che stai segnalando non può essere indicato come proprio duplicato.');
+                  } else {
+                    setSelectedDuplicatePointId(point.id);
+                    setSelectingDuplicateOnMap(false);
+                    setReportModalOpen(true);
+                  }
+                } else {
+                  openPointCard(point);
+                }
                 setTimeout(() => {
                   markerPressRef.current = false;
                 }, 250);
@@ -848,6 +861,16 @@ export default function HomeScreen() {
               ? 'Autorizza BIN ad accedere alla posizione'
               : 'Sto cercando la tua posizione GPS...'}
           </Text>
+        </View>
+      )}
+
+      {selectingDuplicateOnMap && (
+        <View style={{ position: 'absolute', top: 92, left: 20, right: 20, zIndex: 30, backgroundColor: '#204B3A', borderRadius: 16, padding: 14, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 8, elevation: 8 }}>
+          <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: '700', textAlign: 'center' }}>Seleziona sulla mappa il BIN duplicato</Text>
+          <Text style={{ color: '#E4EEE8', fontSize: 12, textAlign: 'center', marginTop: 4 }}>Tocca un altro pin per collegarlo alla segnalazione.</Text>
+          <TouchableOpacity onPress={() => { setSelectingDuplicateOnMap(false); setReportModalOpen(true); }} style={{ alignSelf: 'center', marginTop: 9, paddingVertical: 5, paddingHorizontal: 12 }}>
+            <Text style={{ color: '#FFFFFF', fontSize: 13, fontWeight: '700' }}>Annulla selezione</Text>
+          </TouchableOpacity>
         </View>
       )}
 
@@ -1347,6 +1370,13 @@ export default function HomeScreen() {
                 {selectedReportType === 'È un duplicato?' && (
                   <View>
                     <Text style={styles.reportFieldLabel}>Quale altro BIN è un duplicato?</Text>
+                    <TouchableOpacity
+                      style={[styles.reportTypeOption, { justifyContent: 'center', marginBottom: 10 }]}
+                      onPress={() => { setReportModalOpen(false); setSelectingDuplicateOnMap(true); }}
+                      activeOpacity={0.75}
+                    >
+                      <Text style={[styles.reportTypeText, { color: '#204B3A', fontWeight: '700' }]}>⌖  Scegli direttamente sulla mappa</Text>
+                    </TouchableOpacity>
                     {demoPoints.filter((point) => point.id !== selectedPoint?.id).map((point) => {
                       const isSelected = selectedDuplicatePointId === point.id;
                       const distance = selectedPoint
