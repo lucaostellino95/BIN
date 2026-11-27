@@ -366,13 +366,15 @@ function CategoryFilterIcon({ categoryId }: { categoryId: string }) {
     verde: 'M12 3 L5 13 H9 L5 19 H19 L15 13 H19 Z M12 19 V22',
     emergenza: 'M12 3 L20 6 V12 C20 17 16 20 12 22 C8 20 4 17 4 12 V6 Z M12 8 V16 M8 12 H16',
   };
+  const isWater = categoryId === 'acqua';
+
   return (
-    <View style={styles.categoryIcon}>
-      <Svg width={20} height={20} viewBox="0 0 24 24">
+    <View style={[styles.categoryIcon, isWater && styles.categoryIconTile]}>
+      <Svg width={isWater ? 18 : 20} height={isWater ? 18 : 20} viewBox="0 0 24 24">
         <Path
           d={paths[categoryId] ?? paths.acqua}
-          fill="none"
-          stroke="#47745A"
+          fill={isWater ? '#FFFFFF' : 'none'}
+          stroke={isWater ? 'none' : '#47745A'}
           strokeWidth={1.8}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -1751,6 +1753,12 @@ const styles = StyleSheet.create({
     height: 22,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  categoryIconTile: {
+    width: 30,
+    height: 30,
+    borderRadius: 10,
+    backgroundColor: '#32865A',
   },
   categoryLabel: {
     flex: 1,
