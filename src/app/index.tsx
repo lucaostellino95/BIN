@@ -798,7 +798,7 @@ export default function HomeScreen() {
           showsMyLocationButton={false}
           showsCompass={false}
           onPress={handleMapTap}
-          onRegionChange={syncCompassWithMap}
+          onRegionChange={() => syncCompassWithMap()}
           onRegionChangeComplete={() => syncCompassWithMap(true)}
         >
           <UrlTile
