@@ -1085,9 +1085,6 @@ export default function HomeScreen() {
           >
             <View style={styles.pointSheetHeader}>
               <View style={styles.pointSheetTitleGroup}>
-                <View style={styles.pointCardIcon}>
-                  <Text style={styles.pointCardIconText}>{selectedPoint.icon}</Text>
-                </View>
                 <View style={styles.pointCardCopy}>
                   <Text style={styles.pointCardTitle}>{selectedPoint.title}</Text>
                   <Text style={styles.pointCardCategory}>
@@ -1389,19 +1386,6 @@ const styles = StyleSheet.create({
     color: '#315641',
     fontSize: 22,
     lineHeight: 25,
-  },
-  pointCardIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    backgroundColor: '#E7EFE9',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pointCardIconText: {
-    color: '#204B3A',
-    fontSize: 18,
-    fontWeight: '800',
   },
   pointCardCopy: {
     flex: 1,
