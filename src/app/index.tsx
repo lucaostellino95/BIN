@@ -1232,16 +1232,6 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.pointFeatureGrid}>
-              <TouchableWithoutFeedback onPress={() => showComingSoon('Recensioni')}>
-                <View collapsable={false} style={styles.pointFeatureItem}>
-                <Text style={styles.pointFeatureIcon}>☆</Text>
-                <View style={styles.pointFeatureCopy}>
-                  <Text style={styles.pointFeatureTitle}>Recensioni</Text>
-                  <Text style={styles.pointFeatureSubtitle}>Esperienze e valutazioni</Text>
-                </View>
-                <Text style={styles.pointFeatureChevron}>›</Text>
-                </View>
-              </TouchableWithoutFeedback>
               <TouchableWithoutFeedback onPress={() => showComingSoon('Aggiornamenti')}>
                 <View collapsable={false} style={styles.pointFeatureItem}>
                 <Text style={styles.pointFeatureIcon}>↻</Text>
