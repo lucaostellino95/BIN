@@ -665,25 +665,40 @@ export default function HomeScreen() {
     Alert.alert(feature, 'Questa funzione la realizziamo nel prossimo passaggio.');
   }
 
-  async function openPointDirections() {
-    if (!selectedPoint) return;
-
-    const { latitude, longitude } = selectedPoint;
-    const destination = `${latitude},${longitude}`;
-    const nativeMapUrl = Platform.OS === 'ios'
+  async function openNavigationApp(app: 'apple' | 'google', destination: string) {
+    const nativeUrl = app === 'apple'
       ? `maps://?daddr=${destination}&dirflg=d`
-      : `google.navigation:q=${destination}`;
-    const webFallbackUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+      : `comgooglemaps://?daddr=${destination}&directionsmode=driving`;
+    const fallbackUrl = app === 'apple'
+      ? `https://maps.apple.com/?daddr=${destination}`
+      : `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
 
     try {
-      await Linking.openURL(nativeMapUrl);
+      await Linking.openURL(nativeUrl);
     } catch {
       try {
-        await Linking.openURL(webFallbackUrl);
+        await Linking.openURL(fallbackUrl);
       } catch {
         Alert.alert('Navigazione non disponibile', 'Non è stato possibile aprire un’app di navigazione su questo dispositivo.');
       }
     }
+  }
+
+  function openPointDirections() {
+    if (!selectedPoint) return;
+
+    const destination = `${selectedPoint.latitude},${selectedPoint.longitude}`;
+
+    if (Platform.OS === 'ios') {
+      Alert.alert('Come vuoi arrivare?', 'Scegli l’app di navigazione.', [
+        { text: 'Apple Mappe', onPress: () => { void openNavigationApp('apple', destination); } },
+        { text: 'Google Maps', onPress: () => { void openNavigationApp('google', destination); } },
+        { text: 'Annulla', style: 'cancel' },
+      ]);
+      return;
+    }
+
+    void openNavigationApp('google', destination);
   }
 
   function submitPointReport() {
@@ -1379,7 +1394,6 @@ const styles = StyleSheet.create({
   reportModalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(15, 31, 21, 0.48)',
-    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
