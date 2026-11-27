@@ -431,7 +431,6 @@ export default function HomeScreen() {
   const [selectedReportType, setSelectedReportType] = useState('Non funziona');
   const [reportDetails, setReportDetails] = useState('');
   const [pointReports, setPointReports] = useState<Array<{ pointId: string; type: string; details: string; createdAt: number; lastConfirmedAt?: number }>>([]);
-  const [showAllPointReports, setShowAllPointReports] = useState(false);
   const [updatesModalOpen, setUpdatesModalOpen] = useState(false);
   const markerPressRef = useRef(false);
   const [pointSheetExpanded, setPointSheetExpanded] = useState(false);
@@ -640,7 +639,6 @@ export default function HomeScreen() {
 
   function openPointCard(point: DemoPoint & { latitude: number; longitude: number }) {
     setSelectedPoint(point);
-    setShowAllPointReports(false);
     setFiltersOpen(false);
     setFiltersExpanded(false);
   }
