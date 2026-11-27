@@ -1191,6 +1191,31 @@ export default function HomeScreen() {
                 <View style={styles.demoDot} />
                 <Text style={styles.demoNotice}>Punto dimostrativo · posizione e informazioni non reali</Text>
               </View>
+              {pointReports.filter((report) => report.pointId === selectedPoint.id).length > 0 && (
+                <View style={styles.reportHistory}>
+                  <Text style={styles.reportHistoryTitle}>Ultime segnalazioni</Text>
+                  {pointReports
+                    .filter((report) => report.pointId === selectedPoint.id)
+                    .sort((a, b) => b.createdAt - a.createdAt)
+                    .slice(0, 3)
+                    .map((report, index) => {
+                      const ageInDays = (Date.now() - report.createdAt) / (1000 * 60 * 60 * 24);
+                      const freshnessLabel = ageInDays >= 40
+                        ? 'Segnalazione non recente'
+                        : ageInDays >= 20
+                          ? 'Da riconfermare'
+                          : 'Segnalazione recente';
+                      return (
+                        <View key={`${report.createdAt}-preview-${index}`} style={styles.reportHistoryItem}>
+                          <Text style={styles.reportHistoryType}>{report.type}</Text>
+                          <Text style={styles.reportFreshness}>{freshnessLabel}</Text>
+                          {report.details ? <Text style={styles.reportHistoryDetails}>{report.details}</Text> : null}
+                          <Text style={styles.reportHistoryDate}>{new Date(report.createdAt).toLocaleString('it-IT')}</Text>
+                        </View>
+                      );
+                    })}
+                </View>
+              )}
             </View>
 
             <View style={styles.pointFeatureGrid}>
