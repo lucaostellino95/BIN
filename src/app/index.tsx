@@ -665,13 +665,17 @@ export default function HomeScreen() {
     Alert.alert(feature, 'Questa funzione la realizziamo nel prossimo passaggio.');
   }
 
-  async function openNavigationApp(app: 'apple' | 'google', destination: string) {
+  async function openNavigationApp(app: 'apple' | 'google' | 'waze', destination: string) {
     const nativeUrl = app === 'apple'
       ? `maps://?daddr=${destination}&dirflg=d`
-      : `comgooglemaps://?daddr=${destination}&directionsmode=driving`;
+      : app === 'google'
+        ? `comgooglemaps://?daddr=${destination}&directionsmode=driving`
+        : `waze://?ll=${destination}&navigate=yes`;
     const fallbackUrl = app === 'apple'
       ? `https://maps.apple.com/?daddr=${destination}`
-      : `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+      : app === 'google'
+        ? `https://www.google.com/maps/dir/?api=1&destination=${destination}`
+        : `https://waze.com/ul?ll=${destination}&navigate=yes`;
 
     try {
       await Linking.openURL(nativeUrl);
@@ -688,17 +692,20 @@ export default function HomeScreen() {
     if (!selectedPoint) return;
 
     const destination = `${selectedPoint.latitude},${selectedPoint.longitude}`;
+    const options = Platform.OS === 'ios'
+      ? [
+          { text: 'Mappe', onPress: () => { void openNavigationApp('apple', destination); } },
+          { text: 'Google Maps', onPress: () => { void openNavigationApp('google', destination); } },
+          { text: 'Waze', onPress: () => { void openNavigationApp('waze', destination); } },
+          { text: 'Annulla', style: 'cancel' as const },
+        ]
+      : [
+          { text: 'Google Maps', onPress: () => { void openNavigationApp('google', destination); } },
+          { text: 'Waze', onPress: () => { void openNavigationApp('waze', destination); } },
+          { text: 'Annulla', style: 'cancel' as const },
+        ];
 
-    if (Platform.OS === 'ios') {
-      Alert.alert('Come vuoi arrivare?', 'Scegli l’app di navigazione.', [
-        { text: 'Mappe', onPress: () => { void openNavigationApp('apple', destination); } },
-        { text: 'Google Maps', onPress: () => { void openNavigationApp('google', destination); } },
-        { text: 'Annulla', style: 'cancel' },
-      ]);
-      return;
-    }
-
-    void openNavigationApp('google', destination);
+    Alert.alert('Come vuoi arrivare?', 'Scegli l’app di navigazione.', options);
   }
 
   function submitPointReport() {
