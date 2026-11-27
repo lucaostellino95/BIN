@@ -362,40 +362,69 @@ function CategoryFilterIcon({ categoryId }: { categoryId: string }) {
     comfort: 'M4 11 H20 V16 H4 Z M6 16 V21 M18 16 V21 M5 7 H19 V11 H5 Z',
     animali: 'M6 9 A2 2 0 1 0 6 5 A2 2 0 0 0 6 9 M12 7 A2 2 0 1 0 12 3 A2 2 0 0 0 12 7 M18 9 A2 2 0 1 0 18 5 A2 2 0 0 0 18 9 M12 12 C8 9 4 12 6 17 C8 22 10 19 12 19 C14 19 16 22 18 17 C20 12 16 9 12 12 Z',
     attivita: 'M4 10 H20 V21 H4 Z M3 10 L5 4 H19 L21 10 M3 10 A3 3 0 0 0 9 10 A3 3 0 0 0 15 10 A3 3 0 0 0 21 10 M9 21 V15 H15 V21',
-    mobilita: 'M5 17 A4 4 0 1 0 5 9 A4 4 0 0 0 5 17 M19 17 A4 4 0 1 0 19 9 A4 4 0 0 0 19 17 M5 13 L10 7 L14 13 H5 L10 13 L14 7 H17',
+    mobilita: PIN_ICON_PATHS.biciclette,
     verde: 'M12 3 L5 13 H9 L5 19 H19 L15 13 H19 Z M12 19 V22',
     emergenza: 'M12 3 L20 6 V12 C20 17 16 20 12 22 C8 20 4 17 4 12 V6 Z M12 8 V16 M8 12 H16',
   };
-  const categoryColors: Record<string, string> = {
-    acqua: '#249BD1',
-    servizi: '#777F88',
-    accessibilita: '#815DB5',
-    comfort: '#D99A36',
-    animali: '#D47791',
-    attivita: '#287C83',
-    mobilita: '#536D9D',
-    verde: '#32865A',
-    emergenza: '#D45C4D',
-  };
   const isWater = categoryId === 'acqua';
+  const isAccessibility = categoryId === 'accessibilita';
 
   return (
     <View
       style={[
         styles.categoryIcon,
         styles.categoryIconTile,
-        { backgroundColor: categoryColors[categoryId] ?? '#32865A' },
+        { backgroundColor: ({
+          acqua: '#249BD1',
+          servizi: '#777F88',
+          accessibilita: '#815DB5',
+          comfort: '#D99A36',
+          animali: '#D47791',
+          attivita: '#287C83',
+          mobilita: '#536D9D',
+          verde: '#32865A',
+          emergenza: '#D45C4D',
+        } as Record<string, string>)[categoryId] ?? '#32865A' },
       ]}
     >
-      <Svg width={isWater ? 18 : 20} height={isWater ? 18 : 20} viewBox="0 0 24 24">
-        <Path
-          d={paths[categoryId] ?? paths.acqua}
-          fill={isWater ? '#FFFFFF' : 'none'}
-          stroke={isWater ? 'none' : '#FFFFFF'}
-          strokeWidth={1.8}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg width={20} height={20} viewBox="0 0 24 24">
+        {isAccessibility ? (
+          <G transform="translate(1.4 -0.2) scale(0.94)">
+            {/* Stesso pittogramma della sedia a rotelle usato nel pin Accessibilità. */}
+            <Circle cx={7.2} cy={3.1} r={2.1} fill="#FFFFFF" />
+            <Path
+              d="M7.1 6.1 L8.3 12.4 Q8.5 13.5 9.7 13.5 H14.6 L17.2 19.7 Q17.6 20.7 18.7 20.7 H21"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <Path
+              d="M7.6 7.3 L15.8 7.1"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+            />
+            <Path
+              d="M6.6 9.3 A7.2 7.2 0 1 0 15.3 16.8"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+            />
+          </G>
+        ) : (
+          <Path
+            d={paths[categoryId] ?? paths.acqua}
+            fill={isWater ? '#FFFFFF' : 'none'}
+            stroke={isWater ? 'none' : '#FFFFFF'}
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        )}
       </Svg>
     </View>
   );
